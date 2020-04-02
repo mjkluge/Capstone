@@ -1,18 +1,17 @@
-package com.example.capstone.ui.main;
+package com.example.capstone;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.capstone.R;
+import com.example.capstone.ui.main.PageViewModel;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -20,6 +19,7 @@ import com.example.capstone.R;
 public class PlaceholderFragment extends Fragment {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
+    RecyclerView dishRecyclerView;
 
     private PageViewModel pageViewModel;
 
@@ -39,7 +39,10 @@ public class PlaceholderFragment extends Fragment {
         if (getArguments() != null) {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
         }
+
         pageViewModel.setIndex(index);
+
+
     }
 
     @Override
@@ -54,6 +57,13 @@ public class PlaceholderFragment extends Fragment {
         //        textView.setText(s);
         //    }
         //});
+
+        dishRecyclerView = root.findViewById(R.id.dishRecyclerView);
+        DishAdapter dishAdapter = new DishAdapter(root.getContext());
+
+        dishRecyclerView.setAdapter(dishAdapter);
+        //dishRecyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
+
         return root;
     }
 }
