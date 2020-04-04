@@ -8,9 +8,9 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class DishAdapter extends RecyclerView.Adapter<DishAdapter.MyViewHolder> {
+public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.MyViewHolder> {
 
-    public DishAdapter(){
+    public RestaurantAdapter(){
         super();
     }
 

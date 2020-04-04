@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,15 +17,16 @@ import com.example.capstone.ui.main.PageViewModel;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class PlaceholderFragment extends Fragment {
+public class DishPage extends Fragment {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
     RecyclerView dishRecyclerView;
+    LinearLayoutManager mLayoutManager;
 
     private PageViewModel pageViewModel;
 
-    public static PlaceholderFragment newInstance(int index) {
-        PlaceholderFragment fragment = new PlaceholderFragment();
+    public static DishPage newInstance(int index) {
+        DishPage fragment = new DishPage();
         Bundle bundle = new Bundle();
         bundle.putInt(ARG_SECTION_NUMBER, index);
         fragment.setArguments(bundle);
@@ -58,12 +60,26 @@ public class PlaceholderFragment extends Fragment {
         //    }
         //});
 
-        dishRecyclerView = root.findViewById(R.id.dishRecyclerView);
-        DishAdapter dishAdapter = new DishAdapter(root.getContext());
-
-        dishRecyclerView.setAdapter(dishAdapter);
-        //dishRecyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
 
         return root;
+    }
+
+    @Override
+    public void onViewCreated (View view, Bundle savedInstanceState){
+        super.onViewCreated(view, savedInstanceState);
+
+       mLayoutManager = new LinearLayoutManager(getActivity());
+       mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+
+        dishRecyclerView = (RecyclerView) view.findViewById(R.id.dishRecyclerView);
+        dishRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        dishRecyclerView.setLayoutManager(mLayoutManager);
+
+        DishAdapter dishAdapter = new DishAdapter();
+
+        dishRecyclerView.setAdapter(dishAdapter);
+
+
+
     }
 }
