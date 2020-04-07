@@ -8,10 +8,15 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.List;
+
 public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.MyViewHolder> {
 
-    public RestaurantAdapter(){
-        super();
+    public RestaurantAdapter(Context applicationContext, List<FoursquareResults> frs) {
+    }
+
+    public RestaurantAdapter() {
+
     }
 
     @NonNull

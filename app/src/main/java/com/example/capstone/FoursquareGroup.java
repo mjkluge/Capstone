@@ -1,4 +1,4 @@
-package com.example.capstone.ui.main;
+package com.example.capstone;
 
 import java.util.ArrayList;
 import java.util.List;
