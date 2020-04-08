@@ -63,10 +63,7 @@ public class MainActivity extends AppCompatActivity
             TabLayout tabs = findViewById(R.id.tabs);
             tabs.setupWithViewPager(viewPager);
             FloatingActionButton fab = findViewById(R.id.fab);
-            super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
-            getActionBar().setHomeButtonEnabled(true);
-            getActionBar().setDisplayHomeAsUpEnabled(true);
 
 
             // Creates a connection to the Google API for location services
