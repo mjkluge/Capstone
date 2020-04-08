@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity
         private GoogleApiClient mGoogleApiClient;
         private FusedLocationProviderClient fusedLocationClient;
 
-        // The RecyclerView and associated objects for displaying the nearby coffee spots
+        // The RecyclerView and associated objects for displaying the nearby restaurants
         private RecyclerView RestaurantPage;
         private RecyclerView.Adapter RestaurantAdapter;
 
