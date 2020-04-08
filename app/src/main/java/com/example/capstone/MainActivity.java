@@ -3,7 +3,18 @@ package com.example.capstone;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NavUtils;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
+
+import com.example.capstone.ui.main.SectionsPagerAdapter;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -13,20 +24,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
-
-import androidx.annotation.NonNull;
-import androidx.core.app.NavUtils;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
-
-import com.example.capstone.ui.main.SectionsPagerAdapter;
 
 import java.util.List;
 
@@ -53,8 +50,9 @@ public class MainActivity extends AppCompatActivity
         // The client ID and client secret for authenticating with the Foursquare API
         private String foursquareClientID;
         private String foursquareClientSecret;
+        private SectionsPagerAdapter sectionsPagerAdapter;
 
-        @Override
+    @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
@@ -64,7 +62,6 @@ public class MainActivity extends AppCompatActivity
             TabLayout tabs = findViewById(R.id.tabs);
             tabs.setupWithViewPager(viewPager);
             FloatingActionButton fab = findViewById(R.id.fab);
-            setContentView(R.layout.activity_main);
 
 
             // Creates a connection to the Google API for location services
@@ -163,6 +160,8 @@ public class MainActivity extends AppCompatActivity
 
                                     // Displays the results in the RecyclerView
                                     RestaurantAdapter = new RestaurantAdapter(getApplicationContext(), frs);
+                                    RestaurantPage rp = (RestaurantPage) sectionsPagerAdapter.getItem(0); //get the fragment from tab 0 (restaurant page)
+                                    rp.getRestaurantRecyclerView().setAdapter(RestaurantAdapter);
                                  //   RestaurantPage.setAdapter(RestaurantAdapter);
                                 }
 

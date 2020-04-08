@@ -20,6 +20,9 @@ import com.example.capstone.ui.main.PageViewModel;
 public class RestaurantPage extends Fragment {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
+
+
+
     RecyclerView restaurantRecyclerView;
     LinearLayoutManager mLayoutManager;
 
@@ -45,6 +48,10 @@ public class RestaurantPage extends Fragment {
         pageViewModel.setIndex(index);
 
 
+    }
+
+    public RecyclerView getRestaurantRecyclerView() {
+        return restaurantRecyclerView;
     }
 
     @Override
