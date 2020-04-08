@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -162,23 +163,24 @@ public class MainActivity extends AppCompatActivity
 
                                     // Displays the results in the RecyclerView
                                     RestaurantAdapter = new RestaurantAdapter(getApplicationContext(), frs);
-                                    RestaurantPage.setAdapter(RestaurantAdapter);
+                                 //   RestaurantPage.setAdapter(RestaurantAdapter);
                                 }
 
                                 @Override
                                 public void onFailure(Call<FoursquareJSON> call, Throwable t) {
-                                    //eror message
+                                    Log.e(null,"Cant connect to foursquare");
                                 }
 
                             });
                         } else {
-                            //error message here location was null
+                            Log.e(null,"Location was null");
                         }
                     }
                 });
 
             }else{
-                //more error message
+                Log.e(null,"Cant access lovation");
+
             }
         }
         @Override
@@ -202,7 +204,8 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-          // cant connect to google services
+            Log.e(null,"Cant connect to google services");
+
         }
 
         }
