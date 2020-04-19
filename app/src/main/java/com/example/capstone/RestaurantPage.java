@@ -20,13 +20,7 @@ import com.example.capstone.ui.main.PageViewModel;
 public class RestaurantPage extends Fragment {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
-
-
-
-    RecyclerView restaurantRecyclerView;
-    LinearLayoutManager mLayoutManager;
-
-    private PageViewModel pageViewModel;
+    private RecyclerView restaurantRecyclerView;
 
     public static RestaurantPage newInstance(int index) {
         RestaurantPage fragment = new RestaurantPage();
@@ -39,15 +33,12 @@ public class RestaurantPage extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
+        PageViewModel pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
         int index = 1;
         if (getArguments() != null) {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
         }
-
         pageViewModel.setIndex(index);
-
-
     }
 
     public RecyclerView getRestaurantRecyclerView() {
@@ -66,8 +57,6 @@ public class RestaurantPage extends Fragment {
         //        textView.setText(s);
         //    }
         //});
-
-
         return root;
     }
 
@@ -75,7 +64,7 @@ public class RestaurantPage extends Fragment {
     public void onViewCreated (View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
 
-        mLayoutManager = new LinearLayoutManager(getActivity());
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
         restaurantRecyclerView = (RecyclerView) view.findViewById(R.id.dishRecyclerView);

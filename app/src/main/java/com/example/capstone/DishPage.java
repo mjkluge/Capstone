@@ -20,10 +20,7 @@ import com.example.capstone.ui.main.PageViewModel;
 public class DishPage extends Fragment {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
-    RecyclerView dishRecyclerView;
-    LinearLayoutManager mLayoutManager;
-
-    private PageViewModel pageViewModel;
+    private RecyclerView dishRecyclerView;
 
     public static DishPage newInstance(int index) {
         DishPage fragment = new DishPage();
@@ -36,15 +33,16 @@ public class DishPage extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
+        PageViewModel pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
         int index = 1;
         if (getArguments() != null) {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
         }
-
         pageViewModel.setIndex(index);
+    }
 
-
+    public RecyclerView getDishRecyclerView() {
+        return dishRecyclerView;
     }
 
     @Override
@@ -59,8 +57,6 @@ public class DishPage extends Fragment {
         //        textView.setText(s);
         //    }
         //});
-
-
         return root;
     }
 
@@ -68,8 +64,8 @@ public class DishPage extends Fragment {
     public void onViewCreated (View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
 
-       mLayoutManager = new LinearLayoutManager(getActivity());
-       mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
         dishRecyclerView = (RecyclerView) view.findViewById(R.id.dishRecyclerView);
         dishRecyclerView.setItemAnimator(new DefaultItemAnimator());

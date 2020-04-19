@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.example.capstone.DishPage;
 import com.example.capstone.R;
+import com.example.capstone.RestaurantPage;
 
 /**
  * A [FragmentPagerAdapter] that returns a fragment corresponding to
@@ -30,8 +31,10 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
         // Return a PlaceholderFragment (defined as a static inner class below).
+        if(position == 0) return RestaurantPage.newInstance(0);
+        if(position == 1) return DishPage.newInstance(1);
         if(position == 2) return MapFragment.newInstance();
-        else return DishPage.newInstance(position + 1);
+        return null; //there are three tabs, any higher number is invalid
     }
 
     @Nullable
