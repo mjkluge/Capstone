@@ -92,7 +92,6 @@ public class MainActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<Location> task) {
                 Location location = task.getResult();
                 if (location != null) {
-                    Toast.makeText(getApplicationContext(), location.toString(), Toast.LENGTH_LONG);
                     // The user's current latitude, longitude, and location accuracy
                     String userLL = location.getLatitude() + "," + location.getLongitude();
                     double userLLAcc = location.getAccuracy();
@@ -118,12 +117,13 @@ public class MainActivity extends AppCompatActivity {
                             FoursquareResponse fr = fjson.response;
                             List<FoursquareVenue> frs = fr.venues;
                             FoursquareVenue fv = frs.get(0);
+                            Log.d("Debug",fv.name);
 
                         }
 
                         @Override
                         public void onFailure(Call<FoursquareJSON> call, Throwable t) {
-                            //some sort of failure message
+                            Log.d("Debug","Unable to get response");
                         }
                     });
                     // Calls the Foursquare API to explore nearby restaurants
@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
                             FoursquareResponse fr = fjson.response;
                             FoursquareGroup fg = fr.group;
                             List<FoursquareResults> frs = fg.results;
-
+                                Log.d("Debug",frs.toString());
                             // Displays the results in the RecyclerView
 
                             //   RestaurantPage.setAdapter(RestaurantAdapter);
