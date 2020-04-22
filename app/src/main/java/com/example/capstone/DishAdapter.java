@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,6 +25,8 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.MyViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        holder.name.setText("Dish " + position);
+        holder.description.setText("This is a description of dish " + position + ".");
     }
 
     @Override
@@ -32,8 +35,12 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.MyViewHolder> 
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
+        TextView name;
+        TextView description;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
+            name = itemView.findViewById(R.id.name);
+            description = itemView.findViewById(R.id.description);
         }
     }
 }

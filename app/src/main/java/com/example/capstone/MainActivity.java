@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity
                                     List<FoursquareResults> frs = fg.results;
 
                                     // Displays the results in the RecyclerView
-                                    RestaurantAdapter = new RestaurantAdapter(getApplicationContext(), frs);
+                                    RestaurantAdapter = new RestaurantAdapter(); //TODO:add argument
                                     RestaurantPage rp = (RestaurantPage) sectionsPagerAdapter.getItem(0); //get the fragment from tab 0 (restaurant page)
                                     rp.getRestaurantRecyclerView().setAdapter(RestaurantAdapter);
                                  //   RestaurantPage.setAdapter(RestaurantAdapter);

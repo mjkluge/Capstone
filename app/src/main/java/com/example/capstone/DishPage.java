@@ -67,7 +67,7 @@ public class DishPage extends Fragment {
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-        dishRecyclerView = (RecyclerView) view.findViewById(R.id.dishRecyclerView);
+        dishRecyclerView = (RecyclerView) view.findViewById(R.id.myRecyclerView);
         dishRecyclerView.setItemAnimator(new DefaultItemAnimator());
         dishRecyclerView.setLayoutManager(mLayoutManager);
 

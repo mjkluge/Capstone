@@ -67,7 +67,7 @@ public class RestaurantPage extends Fragment {
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-        restaurantRecyclerView = (RecyclerView) view.findViewById(R.id.dishRecyclerView);
+        restaurantRecyclerView = (RecyclerView) view.findViewById(R.id.myRecyclerView);
         restaurantRecyclerView.setItemAnimator(new DefaultItemAnimator());
         restaurantRecyclerView.setLayoutManager(mLayoutManager);
 
