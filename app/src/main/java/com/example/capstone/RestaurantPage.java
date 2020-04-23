@@ -14,6 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.capstone.ui.main.PageViewModel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A placeholder fragment containing a simple view.
  */
@@ -71,7 +74,7 @@ public class RestaurantPage extends Fragment {
         restaurantRecyclerView.setItemAnimator(new DefaultItemAnimator());
         restaurantRecyclerView.setLayoutManager(mLayoutManager);
 
-        RestaurantAdapter restaurantAdapter = new RestaurantAdapter();
+        RestaurantAdapter restaurantAdapter = new RestaurantAdapter(((MainActivity)this.getActivity()).getFrs());
 
         restaurantRecyclerView.setAdapter(restaurantAdapter);
 

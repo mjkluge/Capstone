@@ -28,6 +28,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -52,6 +53,12 @@ public class MainActivity extends AppCompatActivity {
     private String foursquareClientID;
     private String foursquareClientSecret;
     private SectionsPagerAdapter sectionsPagerAdapter;
+    private List<FoursquareResults> frs = new ArrayList<FoursquareResults>();
+
+
+    public List<FoursquareResults> getFrs() {
+        return frs;
+    }
 
 
     @Override
@@ -140,11 +147,8 @@ public class MainActivity extends AppCompatActivity {
                             FoursquareJSON fjson = response.body();
                             FoursquareResponse fr = fjson.response;
                             FoursquareGroup fg = fr.group;
-                            List<FoursquareResults> frs = fg.results;
+                            frs = fg.results;
                                 Log.d("Debug",frs.toString());
-                            // Displays the results in the RecyclerView
-
-                            //   RestaurantPage.setAdapter(RestaurantAdapter);
                         }
 
                         @Override
