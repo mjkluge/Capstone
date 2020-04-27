@@ -1,6 +1,5 @@
 package com.example.capstone;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,10 +8,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.MyViewHolder> {
+import java.util.List;
 
-    public RestaurantAdapter(){
+public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.MyViewHolder> {
+    List<FoursquareResults> frs;
+
+    public RestaurantAdapter(List<FoursquareResults> frs){
         super();
+        this.frs = frs;
     }
 
     @NonNull
@@ -25,13 +28,14 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.My
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.name.setText("Restaurant " + position);
-        holder.description.setText("This is a description of restaurant " + position + ".");
+        FoursquareResults result = frs.get(position);
+        holder.name.setText(result.venue.name);
+        holder.description.setText("Rating: " + result.venue.rating);
     }
 
     @Override
     public int getItemCount() {
-        return 15;
+        return frs.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
