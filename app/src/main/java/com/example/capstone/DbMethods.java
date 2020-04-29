@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DbMethods {
-    private static final String url = "jdbc:mysql://localhost:3306/test";
+    private static final String url = "jdbc:mysql://localhost:3306/foodfinder";
     private static final String user = "root";
     private static final String password = "FoodFinderRoot1";
 
@@ -22,6 +22,7 @@ public class DbMethods {
     }
 
     public static DishDetails getDishDetails(String dishId){
+
         DishDetails myDetails = new DishDetails();
         String query = "SELECT `dish`.`dishId`,\n" +
                 "    `dish`.`dishName`,\n" +
@@ -37,6 +38,7 @@ public class DbMethods {
                 "WHERE `dishId` = " + dishId + ";";
 
         try {
+            Class.forName("com.mysql.jdbc.Driver");
             // opening database connection to MySQL server
             con = DriverManager.getConnection(url, user, password);
 
@@ -49,17 +51,64 @@ public class DbMethods {
 
 
             while (rs.next()) {
-                myDetails.setDishId(rs.getString(dishId));
+                myDetails.setDishId(rs.getString("dishId"));
 
-                myDetails.setDishName(rs.getString(dishId));
-                myDetails.setDescription(rs.getString(dishId));
-                myDetails.setCalories(rs.getInt(dishId));
-                myDetails.setPrice(rs.getString(dishId));
+                myDetails.setDishName(rs.getString("dishName"));
+                myDetails.setAvgReview(rs.getFloat("avgRating"));
+                myDetails.setDescription(rs.getString("description"));
+                myDetails.setCalories(rs.getInt("calories"));
+                myDetails.setPrice(rs.getString("price"));
 
-                myDetails.setVegetarian(rs.getBoolean(dishId));
-                myDetails.setVegan(rs.getBoolean(dishId));
-                myDetails.setDairy(rs.getBoolean(dishId));
-                myDetails.setNuts(rs.getBoolean(dishId));
+                myDetails.setVegetarian(rs.getBoolean("vegetarian"));
+                myDetails.setVegan(rs.getBoolean("vegan"));
+                myDetails.setDairy(rs.getBoolean("dairy"));
+                myDetails.setNuts(rs.getBoolean("nuts"));
+            }
+
+        } catch (SQLException sqlEx) {
+            myDetails = null;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            //close connection ,stmt and resultset here
+            try { con.close(); } catch(SQLException se) { /*can't do anything */ }
+            try { stmt.close(); } catch(SQLException se) { /*can't do anything */ }
+            try { rs.close(); } catch(SQLException se) { /*can't do anything */ }
+        }
+        return myDetails;
+    }
+
+    public static ReviewDetails getReviews(String dishId){
+        ReviewDetails myDetails = new ReviewDetails();
+        String query = "SELECT `review`.`reviewId`,\n" +
+                "    `review`.`title`,\n" +
+                "    `review`.`content`,\n" +
+                "    `review`.`rating`,\n" +
+                "    `review`.`userId`,\n" +
+                "    `review`.`dishId`,\n" +
+                "FROM `foodfinder`.`review`" +
+                "WHERE `dishId` = " + dishId + ";";
+
+        try {
+            // opening database connection to MySQL server
+            con = DriverManager.getConnection(url, user, password);
+
+            // getting Statement object to execute query
+            stmt = con.createStatement();
+
+            // executing SELECT query
+            rs = stmt.executeQuery(query);
+
+
+
+            while (rs.next()) {
+                myDetails.setReviewId(rs.getString("reviewId"));
+                myDetails.setTitle(rs.getString("title"));
+                myDetails.setContent(rs.getString("content"));
+
+                myDetails.setRating(rs.getInt("rating"));
+                myDetails.setUserId(rs.getString("userId"));
+                myDetails.setDishId(rs.getString("dishId"));
             }
 
         } catch (SQLException sqlEx) {
