@@ -5,21 +5,15 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.NavUtils;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
-import com.example.capstone.ui.main.SectionsPagerAdapter;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -54,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
     private String foursquareClientSecret;
     private SectionsPagerAdapter sectionsPagerAdapter;
     private List<FoursquareResults> frs = new ArrayList<FoursquareResults>();
-
-
+    public Location location;
+    public Location getOutLocation() {return location;}
     public List<FoursquareResults> getFrs() {
         return frs;
     }
@@ -97,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
         fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
             @Override
             public void onComplete(@NonNull Task<Location> task) {
-                Location location = task.getResult();
+                location = task.getResult();
                 if (location != null) {
                     // The user's current latitude, longitude, and location accuracy
                     String userLL = location.getLatitude() + "," + location.getLongitude();

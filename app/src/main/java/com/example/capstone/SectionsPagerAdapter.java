@@ -1,4 +1,4 @@
-package com.example.capstone.ui.main;
+package com.example.capstone;
 
 import android.content.Context;
 
@@ -7,10 +7,6 @@ import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-
-import com.example.capstone.DishPage;
-import com.example.capstone.R;
-import com.example.capstone.RestaurantPage;
 
 /**
  * A [FragmentPagerAdapter] that returns a fragment corresponding to

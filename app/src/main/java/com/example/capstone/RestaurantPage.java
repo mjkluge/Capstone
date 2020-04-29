@@ -12,11 +12,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.capstone.ui.main.PageViewModel;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * A placeholder fragment containing a simple view.
  */

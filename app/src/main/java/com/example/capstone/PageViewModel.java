@@ -1,4 +1,4 @@
-package com.example.capstone.ui.main;
+package com.example.capstone;
 
 import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;

@@ -1,19 +1,26 @@
-package com.example.capstone.ui.main;
+package com.example.capstone;
 
+import android.location.Location;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.capstone.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.List;
 
 
 /**
@@ -27,13 +34,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private GoogleMap mMap;
+    MapView mapView;
+    private List<FoursquareResults> frs;
+    private Location location;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
+    public MapFragment(List<FoursquareResults> frs){
+        super();
+
+    }
+
     public MapFragment() {
-        // Required empty public constructor
+
     }
 
     /**
@@ -52,6 +67,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
@@ -59,6 +75,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
 
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -68,12 +85,32 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
+        mapView = view.findViewById(R.id.mapView);
+
+        if(mapView != null){
+            mapView.onCreate(null);
+            mapView.onResume();;
+            mapView.getMapAsync(this);
+        }
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        this.frs = ((MainActivity)this.getActivity()).getFrs();
+        this.location = ((MainActivity) this.getActivity()).getOutLocation();
+        MapsInitializer.initialize(getContext());
+        mMap = googleMap;
+        for(FoursquareResults r:frs){
+            LatLng loc = new LatLng(r.venue.location.lat,r.venue.location.lng);
+            mMap.addMarker(new MarkerOptions().position(loc).title(r.venue.name +r.venue.rating));
+        }
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34.0, 151.0);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        LatLng def = new LatLng(location.getLatitude(),location.getLongitude());
+        mMap.setMyLocationEnabled(true);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(def));
+        mMap.setMinZoomPreference(13);
     }
 }
