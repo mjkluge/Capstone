@@ -105,7 +105,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMap = googleMap;
         for(FoursquareResults r:frs){
             LatLng loc = new LatLng(r.venue.location.lat,r.venue.location.lng);
-            mMap.addMarker(new MarkerOptions().position(loc).title(r.venue.name +r.venue.rating));
+            mMap.addMarker(new MarkerOptions().position(loc).title(r.venue.name));
         }
         // Add a marker in Sydney and move the camera
         LatLng def = new LatLng(location.getLatitude(),location.getLongitude());

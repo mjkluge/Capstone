@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
     // Builds Retrofit and FoursquareService objects for calling the Foursquare API and parsing with GSON
 
 
@@ -101,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                             .baseUrl(foursquareBaseURL)
                             .addConverterFactory(GsonConverterFactory.create())
                             .build();
-                    FoursquareService foursquare = retrofit.create(FoursquareService.class);
+                    final FoursquareService foursquare = retrofit.create(FoursquareService.class);
 
                     // Calls the Foursquare API to snap the user's location to a Foursquare venue
                     Call<FoursquareJSON> stpCall = foursquare.snapToPlace(
@@ -109,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
                             foursquareClientSecret,
                             userLL,
                             userLLAcc);
-                    stpCall.enqueue(new Callback<FoursquareJSON>() {
+                    Callback<FoursquareJSON> restaurantCallback = new Callback<FoursquareJSON>() {
                         @Override
                         public void onResponse(Call<FoursquareJSON> call, Response<FoursquareJSON> response) {
 
@@ -126,7 +127,8 @@ public class MainActivity extends AppCompatActivity {
                         public void onFailure(Call<FoursquareJSON> call, Throwable t) {
                             Log.d("Debug","Unable to get response");
                         }
-                    });
+                    };
+                    stpCall.enqueue(restaurantCallback);
                     // Calls the Foursquare API to explore nearby restaurants
                     Call<FoursquareJSON> restCall = foursquare.getRecommendations(
                             foursquareClientID,
@@ -143,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
                             FoursquareGroup fg = fr.group;
                             frs = fg.results;
                                 Log.d("Debug",frs.toString());
+                                Details(foursquare);
                         }
 
                         @Override
@@ -151,8 +154,35 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                     });
+                   // Log.d("debug","made it here");
+                    //Details(foursquare);
                 } else {
                     Log.e(null, "Location was null");
+                }
+            }
+
+            private void Details(FoursquareService foursquare) {
+                Log.d("debug","made it here2");
+                for(FoursquareResults r:frs) {
+                    Log.d("debug","made it here3");
+                    Call<FoursquareJSON> detailsCall = foursquare.getDetails(
+                            foursquareClientID,
+                            foursquareClientSecret,
+                            r.venue.id);
+                    detailsCall.enqueue(new Callback<FoursquareJSON>() {
+
+                        @Override
+                        public void onResponse(Call<FoursquareJSON> call, Response<FoursquareJSON> response) {
+                            //FoursquareJSON fjson = response.body();
+                           // FoursquareResponse fr = fjson.response;
+                            Log.d("debug","made it here");
+                        }
+
+                        @Override
+                        public void onFailure(Call<FoursquareJSON> call, Throwable t) {
+                            Log.d("Debug","Unable to get details response");
+                        }
+                    });
                 }
             }
         });

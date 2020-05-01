@@ -1,6 +1,7 @@
 package com.example.capstone;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +13,18 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 /**
  * A placeholder fragment containing a simple view.
  */
 public class DishPage extends Fragment {
+
+
 
     private static final String ARG_SECTION_NUMBER = "section_number";
     private RecyclerView dishRecyclerView;
@@ -69,11 +78,12 @@ public class DishPage extends Fragment {
         dishRecyclerView.setItemAnimator(new DefaultItemAnimator());
         dishRecyclerView.setLayoutManager(mLayoutManager);
 
-        DishAdapter dishAdapter = new DishAdapter();
+        DishAdapter dishAdapter = new DishAdapter(((MainActivity)this.getActivity()).getFrs());
 
         dishRecyclerView.setAdapter(dishAdapter);
 
 
 
     }
+
 }

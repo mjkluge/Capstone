@@ -19,8 +19,9 @@ public interface FoursquareService {
                                       @Query("ll") String ll,
                                       @Query("llAcc") double llAcc);
 
-    @GET ("https://api.foursquare.com/v2/venues/VENUE_ID/menu")
-    Call<FoursquareJSON> getMenu(@Query("client_id") String clientID,
+
+    @GET ("venues/46d36dfdf964a520574a1fe3")
+    Call<FoursquareJSON> getDetails(@Query("client_id") String clientID,
                                  @Query("client_secret") String clientSecret,
                                  @Query("VENUE_ID") String venueID);
 }
