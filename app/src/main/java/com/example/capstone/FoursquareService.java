@@ -1,6 +1,7 @@
 package com.example.capstone;
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface FoursquareService {
@@ -20,8 +21,10 @@ public interface FoursquareService {
                                       @Query("llAcc") double llAcc);
 
 
-    @GET ("venues/46d36dfdf964a520574a1fe3")
-    Call<FoursquareJSON> getDetails(@Query("client_id") String clientID,
-                                 @Query("client_secret") String clientSecret,
-                                 @Query("VENUE_ID") String venueID);
+    @GET ("venues/{VENUE_ID}?v=20161101")
+    Call<FoursquareJSON> getDetails(@Path("VENUE_ID") String venueID,
+            @Query("client_id") String clientID,
+            @Query("client_secret") String clientSecret);
+
+
 }

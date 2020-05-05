@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private String foursquareClientSecret;
     private SectionsPagerAdapter sectionsPagerAdapter;
     private List<FoursquareResults> frs = new ArrayList<FoursquareResults>();
+    private List<FoursquareResults> frsDetailed = new ArrayList<FoursquareResults>();
     public Location location;
     public Location getOutLocation() {return location;}
     public List<FoursquareResults> getFrs() {
@@ -141,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
 
                             // Gets the venue object from the JSON response
                             FoursquareJSON fjson = response.body();
+                            Log.d("Pizza", response.toString());
                             FoursquareResponse fr = fjson.response;
                             FoursquareGroup fg = fr.group;
                             frs = fg.results;
@@ -162,20 +164,30 @@ public class MainActivity extends AppCompatActivity {
             }
 
             private void Details(FoursquareService foursquare) {
-                Log.d("debug","made it here2");
-                for(FoursquareResults r:frs) {
-                    Log.d("debug","made it here3");
+
+                //for(FoursquareResults r:frs) {
+                //comment out below statement and uncomment above and lower squiggly for actual usage. this is for lower amount of calls
+                FoursquareResults r = frs.get(0);
+
                     Call<FoursquareJSON> detailsCall = foursquare.getDetails(
+                            r.venue.id,
                             foursquareClientID,
-                            foursquareClientSecret,
-                            r.venue.id);
+                            foursquareClientSecret
+                           );
                     detailsCall.enqueue(new Callback<FoursquareJSON>() {
 
                         @Override
                         public void onResponse(Call<FoursquareJSON> call, Response<FoursquareJSON> response) {
-                            //FoursquareJSON fjson = response.body();
-                           // FoursquareResponse fr = fjson.response;
-                            Log.d("debug","made it here");
+                            FoursquareJSON fjson2 = response.body();
+                            Log.d("details",response.toString());
+                            FoursquareResponse fr = fjson2.response;
+                            FoursquareVenue fv = fr.venue;
+                            
+                            Log.d("details",fv.name);
+                            Log.d("details",fv.price.message);
+                            Log.d("details", String.valueOf(fv.rating));
+
+
                         }
 
                         @Override
@@ -183,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
                             Log.d("Debug","Unable to get details response");
                         }
                     });
-                }
+                //}
             }
         });
     }

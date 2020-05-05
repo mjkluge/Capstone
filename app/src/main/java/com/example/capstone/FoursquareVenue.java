@@ -11,6 +11,10 @@ public class FoursquareVenue {
     // The rating of the venue, if available.
     double rating;
 
+    FoursquarePrice price;
+
+    FourquareBestPhoto photo;
+
     // A location object within the venue.
     FoursquareLocation location;
 }
