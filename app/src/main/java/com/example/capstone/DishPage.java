@@ -1,5 +1,6 @@
 package com.example.capstone;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class DishPage extends Fragment {
+public class DishPage extends Fragment implements DishAdapter.OnDishListener{
 
     private static final String ARG_SECTION_NUMBER = "section_number";
     private RecyclerView dishRecyclerView;
@@ -69,11 +70,16 @@ public class DishPage extends Fragment {
         dishRecyclerView.setItemAnimator(new DefaultItemAnimator());
         dishRecyclerView.setLayoutManager(mLayoutManager);
 
-        DishAdapter dishAdapter = new DishAdapter();
+        DishAdapter dishAdapter = new DishAdapter(this);
 
         dishRecyclerView.setAdapter(dishAdapter);
 
 
 
+    }
+    @Override
+    public void onDishClick(int position) {
+        Intent intent = new Intent(getActivity(), DishPopUp.class);
+        startActivity(intent);
     }
 }
