@@ -1,10 +1,14 @@
 package com.example.capstone;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 
@@ -12,6 +16,7 @@ public class RestaurantPopUp extends AppCompatActivity {
 
     private RecyclerView reviewRecyclerView;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,6 +28,11 @@ public class RestaurantPopUp extends AppCompatActivity {
         int width = dn.widthPixels;
         int height = dn.heightPixels;
         getWindow().setLayout((int)(width), (int)(height));
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("McDonald's");
+        findViewById(R.id.toolbar_layout).setBackground(getDrawable(R.drawable.mcd));
 
 
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
