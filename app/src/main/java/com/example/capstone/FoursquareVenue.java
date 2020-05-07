@@ -15,6 +15,8 @@ public class FoursquareVenue {
 
     FourquareBestPhoto photo;
 
+    FoursquareMenu menu;
+
     // A location object within the venue.
     FoursquareLocation location;
 }

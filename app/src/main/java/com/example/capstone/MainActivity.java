@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     public List<FoursquareResults> getFrs() {
         return frs;
     }
+    public List<List<FoursquareItems>> menuLvl1;
 
 
     @Override
@@ -148,6 +149,7 @@ public class MainActivity extends AppCompatActivity {
                             frs = fg.results;
                                 Log.d("Debug",frs.toString());
                                 Details(foursquare);
+                                getMenues(foursquare);
                         }
 
                         @Override
@@ -162,7 +164,45 @@ public class MainActivity extends AppCompatActivity {
                     Log.e(null, "Location was null");
                 }
             }
+            private void getMenues(FoursquareService foursquare) {
 
+                //for(FoursquareResults r:frs) {
+                //comment out below statement and uncomment above and lower squiggly for actual usage. this is for lower amount of calls
+                FoursquareResults r = frs.get(0);
+
+                Call<FoursquareJSON> menuCall = foursquare.getMenu(
+                        r.venue.id,
+                        foursquareClientID,
+                        foursquareClientSecret
+                );
+                menuCall.enqueue(new Callback<FoursquareJSON>() {
+
+                    @Override
+                    public void onResponse(Call<FoursquareJSON> call, Response<FoursquareJSON> response) {
+                        FoursquareJSON fjson2 = response.body();
+                        Log.d("details",response.toString());
+                        FoursquareResponse fr = fjson2.response;
+                        FoursquareMenu fm = fr.menu;
+                        FoursquareMenus fms = fm.menus;
+                        Log.d("menu", String.valueOf(fms.count));
+                        List<FoursquareItems> fsi =fms.items;
+                       // menuLvl1.add(fsi);
+                       // Log.d("menu",fsi.toString());
+                        FoursquareItems f1 = fsi.get(0);
+                        Log.d("Menu",f1.entries.items.get(0).entries.items.get(0).entryId);
+
+
+
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<FoursquareJSON> call, Throwable t) {
+                        Log.d("Debug",t.getMessage());
+                    }
+                });
+                //}
+            }
             private void Details(FoursquareService foursquare) {
 
                 //for(FoursquareResults r:frs) {
@@ -182,10 +222,11 @@ public class MainActivity extends AppCompatActivity {
                             Log.d("details",response.toString());
                             FoursquareResponse fr = fjson2.response;
                             FoursquareVenue fv = fr.venue;
-                            
+
                             Log.d("details",fv.name);
                             Log.d("details",fv.price.message);
                             Log.d("details", String.valueOf(fv.rating));
+
 
 
                         }

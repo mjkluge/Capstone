@@ -9,5 +9,6 @@ public class FoursquareResponse {
     FoursquareGroup group;
    List<FoursquareVenue> venues = new ArrayList<>();
    FoursquareVenue venue;
+   FoursquareMenu menu;
 
 }
