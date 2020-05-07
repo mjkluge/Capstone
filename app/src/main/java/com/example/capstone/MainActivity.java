@@ -54,7 +54,9 @@ public class MainActivity extends AppCompatActivity {
     public List<FoursquareResults> getFrs() {
         return frs;
     }
-    public List<List<FoursquareItems>> menuLvl1;
+    public List<FoursquareVenue> details;
+    public ArrayList<ArrayList<FoursquareItems>> menuLvl1;
+    public int count;
 
 
     @Override
@@ -70,6 +72,9 @@ public class MainActivity extends AppCompatActivity {
         foursquareClientID = getResources().getString(R.string.foursquare_client_id);
         foursquareClientSecret = getResources().getString(R.string.foursquare_client_secret);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        count = 0;
+        menuLvl1 = new ArrayList<ArrayList<FoursquareItems>>();
+        details = new ArrayList<>();
         // Gets the stored Foursquare API client ID and client secret from XML
         if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             getLocation();
@@ -150,9 +155,10 @@ public class MainActivity extends AppCompatActivity {
                                 Log.d("Debug",frs.toString());
                                 Details(foursquare);
                                 getMenues(foursquare);
+
                         }
 
-                        @Override
+                                @Override
                         public void onFailure(Call<FoursquareJSON> call, Throwable t) {
                             Log.e(null, "Cant connect to foursquare");
                         }
@@ -166,9 +172,9 @@ public class MainActivity extends AppCompatActivity {
             }
             private void getMenues(FoursquareService foursquare) {
 
-                //for(FoursquareResults r:frs) {
+               // for(FoursquareResults r:frs) {
                 //comment out below statement and uncomment above and lower squiggly for actual usage. this is for lower amount of calls
-                FoursquareResults r = frs.get(0);
+               FoursquareResults r = frs.get(0);
 
                 Call<FoursquareJSON> menuCall = foursquare.getMenu(
                         r.venue.id,
@@ -186,10 +192,11 @@ public class MainActivity extends AppCompatActivity {
                         FoursquareMenus fms = fm.menus;
                         Log.d("menu", String.valueOf(fms.count));
                         List<FoursquareItems> fsi =fms.items;
-                       // menuLvl1.add(fsi);
+                        menuLvl1.add((ArrayList<FoursquareItems>) fsi);
                        // Log.d("menu",fsi.toString());
-                        FoursquareItems f1 = fsi.get(0);
-                        Log.d("Menu",f1.entries.items.get(0).entries.items.get(0).entryId);
+                       // FoursquareItems f1 = fsi.get(0);
+                        //Log.d("Menu",f1.entries.items.get(0).entries.items.get(0).entryId);
+                       // Log.d("Menu", menuLvl1.get(0).get(0).entries.items.get(0).entries.items.get(0).entryId);
 
 
 
@@ -201,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("Debug",t.getMessage());
                     }
                 });
-                //}
+               // }
             }
             private void Details(FoursquareService foursquare) {
 
@@ -222,10 +229,18 @@ public class MainActivity extends AppCompatActivity {
                             Log.d("details",response.toString());
                             FoursquareResponse fr = fjson2.response;
                             FoursquareVenue fv = fr.venue;
+                            details.add(fv);
+                            frs.get(count).venue.bestPhoto = fv.bestPhoto;
+                            frs.get(count).venue.rating = fv.rating;
+                            frs.get(count).venue.price = fv.price;
+                            count++;
 
-                            Log.d("details",fv.name);
-                            Log.d("details",fv.price.message);
-                            Log.d("details", String.valueOf(fv.rating));
+
+                           // Log.d("details",fv.name);
+                            //Log.d("details",fv.price.message);
+                           // Log.d("details", String.valueOf(fv.rating));
+                            //Log.d("photo",fv.bestPhoto.prefix +"50x50"+ fv.bestPhoto.suffix);
+
 
 
 
@@ -236,8 +251,8 @@ public class MainActivity extends AppCompatActivity {
                             Log.d("Debug","Unable to get details response");
                         }
                     });
-                //}
-            }
+                }
+            //}
         });
     }
 }

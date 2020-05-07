@@ -2,9 +2,9 @@ package com.example.capstone;
 
 class FourquareBestPhoto {
 
-    String url;
+    String url ;
 
     String prefix;
 
-    String sufix;
+    String suffix;
 }
