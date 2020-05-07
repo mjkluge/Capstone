@@ -1,6 +1,8 @@
 package com.example.capstone;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +14,12 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static androidx.constraintlayout.widget.Constraints.TAG;
+
 /**
  * A placeholder fragment containing a simple view.
  */
-public class RestaurantPage extends Fragment {
+public class RestaurantPage extends Fragment implements RestaurantAdapter.OnRestaurantListener {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
     private RecyclerView restaurantRecyclerView;
@@ -69,11 +73,17 @@ public class RestaurantPage extends Fragment {
         restaurantRecyclerView.setItemAnimator(new DefaultItemAnimator());
         restaurantRecyclerView.setLayoutManager(mLayoutManager);
 
-        RestaurantAdapter restaurantAdapter = new RestaurantAdapter(((MainActivity)this.getActivity()).getFrs());
+        RestaurantAdapter restaurantAdapter = new RestaurantAdapter(((MainActivity)this.getActivity()).getFrs(), this);
 
         restaurantRecyclerView.setAdapter(restaurantAdapter);
 
+    }
 
+    @Override
+    public void onRestaurantClick(int position) {
+        //Log.d(TAG, "onRestaurantClick: Restaurant " + position);
+        Intent intent = new Intent(getActivity(), RestaurantPopUp.class);
+        startActivity(intent);
 
     }
 }

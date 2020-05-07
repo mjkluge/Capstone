@@ -12,10 +12,11 @@ import java.util.List;
 
 public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.MyViewHolder> {
     List<FoursquareResults> frs;
-
-    public RestaurantAdapter(List<FoursquareResults> frs){
+    private OnRestaurantListener orl;
+    public RestaurantAdapter(List<FoursquareResults> frs, OnRestaurantListener orl){
         super();
         this.frs = frs;
+        this.orl = orl;
     }
 
     @NonNull
@@ -23,7 +24,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.My
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.dish_row, parent, false);
-        return new MyViewHolder(view);
+        return new MyViewHolder(view, orl);
     }
 
     @Override
@@ -38,13 +39,24 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.My
         return frs.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView name;
         TextView description;
-        public MyViewHolder(@NonNull View itemView) {
+        OnRestaurantListener orl;
+        public MyViewHolder(@NonNull View itemView, OnRestaurantListener orl) {
             super(itemView);
             name = itemView.findViewById(R.id.name);
             description = itemView.findViewById(R.id.description);
+            this.orl = orl;
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+            orl.onRestaurantClick(getAdapterPosition());
+        }
+    }
+    public interface OnRestaurantListener{
+        void onRestaurantClick(int position);
     }
 }
