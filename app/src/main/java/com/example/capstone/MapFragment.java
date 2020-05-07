@@ -1,5 +1,6 @@
 package com.example.capstone;
 
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 
@@ -18,6 +19,7 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
@@ -28,7 +30,7 @@ import java.util.List;
  * Use the {@link MapFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MapFragment extends Fragment implements OnMapReadyCallback {
+public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -101,16 +103,26 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         this.frs = ((MainActivity)this.getActivity()).getFrs();
         this.location = ((MainActivity) this.getActivity()).getOutLocation();
+        googleMap.setOnMarkerClickListener(this);
         MapsInitializer.initialize(getContext());
         mMap = googleMap;
         for(FoursquareResults r:frs){
             LatLng loc = new LatLng(r.venue.location.lat,r.venue.location.lng);
-            mMap.addMarker(new MarkerOptions().position(loc).title(r.venue.name +r.venue.rating));
+            MarkerOptions myMarker = new MarkerOptions().position(loc).title(r.venue.name + r.venue.rating);
+            mMap.addMarker(myMarker);
         }
         // Add a marker in Sydney and move the camera
         LatLng def = new LatLng(location.getLatitude(),location.getLongitude());
         mMap.setMyLocationEnabled(true);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(def));
         mMap.setMinZoomPreference(13);
+    }
+
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        Intent intent = new Intent(getActivity(), RestaurantPopUp.class);
+        startActivity(intent);
+        return true;
     }
 }
