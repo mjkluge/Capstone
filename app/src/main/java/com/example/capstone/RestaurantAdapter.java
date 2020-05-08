@@ -33,8 +33,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.My
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         FoursquareResults result = frs.get(position);
         holder.name.setText(result.venue.name);
-
-            holder.description.setText("Rating: " + result.venue.rating);
+        holder.description.setText("Rating: " + result.venue.rating);
 
         if(result.venue.bestPhoto != null) {
             String url = result.venue.bestPhoto.prefix + "193x193" + result.venue.bestPhoto.suffix;

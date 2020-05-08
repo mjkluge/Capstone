@@ -78,7 +78,7 @@ public class DishPage extends Fragment {
         dishRecyclerView.setItemAnimator(new DefaultItemAnimator());
         dishRecyclerView.setLayoutManager(mLayoutManager);
 
-        DishAdapter dishAdapter = new DishAdapter(((MainActivity)this.getActivity()).getFrs());
+        DishAdapter dishAdapter = new DishAdapter(((MainActivity)this.getActivity()).getMenuLvl1());
 
         dishRecyclerView.setAdapter(dishAdapter);
 

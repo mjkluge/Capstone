@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -23,11 +24,12 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.MyViewHolder> 
     private String foursquareClientSecret;
 
     List<FoursquareResults> frs;
-    private String foursquareBaseURL = "https://api.foursquare.com/v2/";
+    public ArrayList<ArrayList<FoursquareItems>> menuLvl1;
 
-    public DishAdapter(List<FoursquareResults> frs){
+
+    public DishAdapter(ArrayList<ArrayList<FoursquareItems>> menu){
         super();
-        this.frs = frs;
+        this.menuLvl1 = menu;
 
     }
 
@@ -41,9 +43,7 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.MyViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        //Please dont steal these. The proper way to do this was not working
-        foursquareClientID = "MEBZPE1NYBH34SQD22J3NHWL250ZOIU24L3U3LFGTOFRSRIV";
-        foursquareClientSecret = "1HMOHKIMFPQ2A2G32HRBRPEABFJCNAXQZOMCRFVURA4MNGVO";
+
         holder.name.setText("Dish " + position);
         holder.description.setText("This is a description of dish " + position + ".");
     }

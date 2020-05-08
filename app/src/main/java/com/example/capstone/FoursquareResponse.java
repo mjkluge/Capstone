@@ -10,5 +10,6 @@ public class FoursquareResponse {
    List<FoursquareVenue> venues = new ArrayList<>();
    FoursquareVenue venue;
    FoursquareMenu menu;
+   FouraquareDescription description;
 
 }

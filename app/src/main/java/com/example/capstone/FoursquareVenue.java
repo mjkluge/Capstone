@@ -13,6 +13,7 @@ public class FoursquareVenue {
 
     FoursquarePrice price;
 
+
     FourquareBestPhoto bestPhoto;
 
     FoursquareMenu menu;

@@ -23,6 +23,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import retrofit2.Call;
@@ -54,8 +55,10 @@ public class MainActivity extends AppCompatActivity {
     public List<FoursquareResults> getFrs() {
         return frs;
     }
+
     public List<FoursquareVenue> details;
     public ArrayList<ArrayList<FoursquareItems>> menuLvl1;
+    public ArrayList<ArrayList<FoursquareItems>> getMenuLvl1(){return menuLvl1;}
     public int count;
 
 
@@ -126,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
                             FoursquareResponse fr = fjson.response;
                             List<FoursquareVenue> frs = fr.venues;
                             FoursquareVenue fv = frs.get(0);
-                            Log.d("Debug",fv.name);
+                            Log.d("Debug",fv.id + fv.name);
 
                         }
 
@@ -193,10 +196,10 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("menu", String.valueOf(fms.count));
                         List<FoursquareItems> fsi =fms.items;
                         menuLvl1.add((ArrayList<FoursquareItems>) fsi);
-                       // Log.d("menu",fsi.toString());
-                       // FoursquareItems f1 = fsi.get(0);
-                        //Log.d("Menu",f1.entries.items.get(0).entries.items.get(0).entryId);
-                       // Log.d("Menu", menuLvl1.get(0).get(0).entries.items.get(0).entries.items.get(0).entryId);
+                        //Log.d("menu",fsi.toString());
+                        // FoursquareItems f1 = fsi.get(0);
+                        // Log.d("Menu",f1.entries.items.get(0).entries.items.get(0).entryId);
+                         //Log.d("Menu", menuLvl1.get(0).get(0).entries.items.get(0).entries.items.get(0).entryId);
 
 
 
@@ -230,11 +233,15 @@ public class MainActivity extends AppCompatActivity {
                             FoursquareResponse fr = fjson2.response;
                             FoursquareVenue fv = fr.venue;
                             details.add(fv);
-                            frs.get(count).venue.bestPhoto = fv.bestPhoto;
-                            frs.get(count).venue.rating = fv.rating;
-                            frs.get(count).venue.price = fv.price;
-                            count++;
-
+                            Iterator<FoursquareResults> iterator = frs.iterator();
+                            for(FoursquareResults r:frs){
+                                if(r.venue.id.equals(fv.id)){
+                                    r.venue.bestPhoto = fv.bestPhoto;
+                                    r.venue.rating = fv.rating;
+                                    r.venue.price = fv.price;
+                                }
+                            }
+                            Log.d("details",fr.venue.id + fr.description);
 
                            // Log.d("details",fv.name);
                             //Log.d("details",fv.price.message);
