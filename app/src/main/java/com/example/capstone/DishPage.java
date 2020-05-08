@@ -2,7 +2,6 @@ package com.example.capstone;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +13,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import java.util.ArrayList;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -29,6 +24,7 @@ public class DishPage extends Fragment implements DishAdapter.OnDishListener{
 
     private static final String ARG_SECTION_NUMBER = "section_number";
     private RecyclerView dishRecyclerView;
+    private DishAdapter dishAdapter;
 
     public static DishPage newInstance(int index) {
         DishPage fragment = new DishPage();
@@ -36,6 +32,13 @@ public class DishPage extends Fragment implements DishAdapter.OnDishListener{
         bundle.putInt(ARG_SECTION_NUMBER, index);
         fragment.setArguments(bundle);
         return fragment;
+    }
+    public void updateList(ArrayList<dish> dishes){
+        if(dishAdapter == null){
+            dishAdapter = new DishAdapter(this, dishes);
+        }else {
+            dishAdapter.setDishList(dishes);
+        }
     }
 
     @Override
@@ -78,9 +81,8 @@ public class DishPage extends Fragment implements DishAdapter.OnDishListener{
         dishRecyclerView = (RecyclerView) view.findViewById(R.id.myRecyclerView);
         dishRecyclerView.setItemAnimator(new DefaultItemAnimator());
         dishRecyclerView.setLayoutManager(mLayoutManager);
-
-
-        DishAdapter dishAdapter = new DishAdapter(this);
+        ArrayList<dish> pizza = ((MainActivity) this.getActivity()).getdishList();
+        dishAdapter = new DishAdapter(this, ((MainActivity)this.getActivity()).getdishList());
 
 
         dishRecyclerView.setAdapter(dishAdapter);

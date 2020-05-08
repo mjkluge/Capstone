@@ -59,8 +59,6 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.My
         ImageButton image;
         RatingBar ratingBar;
         OnRestaurantListener orl;
-        RatingBar ratingBar;
-        OnRestaurantListener orl;
         public MyViewHolder(@NonNull View itemView, OnRestaurantListener orl) {
             super(itemView);
             name = itemView.findViewById(R.id.name);
@@ -68,7 +66,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.My
             ratingBar = itemView.findViewById(R.id.rating);
             this.orl = orl;
             itemView.setOnClickListener(this);
-            image = itemView.findViewById(R.id.imageButton1);
+            image = itemView.findViewById(R.id.imageButton);
         }
 
         @Override

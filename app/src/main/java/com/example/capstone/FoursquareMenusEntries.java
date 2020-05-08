@@ -4,4 +4,5 @@ import java.util.List;
 
 class FoursquareMenusEntries {
     List<FoursquareInnerItems> items;
+    int count;
 }

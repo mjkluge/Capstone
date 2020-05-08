@@ -1,6 +1,6 @@
 package com.example.capstone;
 
-class FoursquareRealItems {
+class dish {
     String entryId;
 
     String name;

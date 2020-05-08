@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
     private String foursquareClientSecret;
     private SectionsPagerAdapter sectionsPagerAdapter;
     private List<FoursquareResults> frs = new ArrayList<FoursquareResults>();
-    private List<FoursquareResults> frsDetailed = new ArrayList<FoursquareResults>();
     public Location location;
     public Location getOutLocation() {return location;}
     public List<FoursquareResults> getFrs() {
@@ -59,14 +58,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public List<FoursquareVenue> details;
-    public ArrayList<ArrayList<FoursquareItems>> menuLvl1;
-    public ArrayList<ArrayList<FoursquareItems>> getMenuLvl1(){return menuLvl1;}
+    public ArrayList<dish> dishList;
+    public ArrayList<dish> getdishList(){return dishList;}
     public int count;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        dishList = new ArrayList<dish>();
+        details = new ArrayList<>();
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            getLocation();
+        } else {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
         setContentView(R.layout.activity_main);
         sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);
@@ -76,16 +83,9 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton fab = findViewById(R.id.fab);
         foursquareClientID = getResources().getString(R.string.foursquare_client_id);
         foursquareClientSecret = getResources().getString(R.string.foursquare_client_secret);
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        count = 0;
-        menuLvl1 = new ArrayList<ArrayList<FoursquareItems>>();
-        details = new ArrayList<>();
+
         // Gets the stored Foursquare API client ID and client secret from XML
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            getLocation();
-        } else {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        }
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -195,9 +195,23 @@ public class MainActivity extends AppCompatActivity {
                         FoursquareResponse fr = fjson2.response;
                         FoursquareMenu fm = fr.menu;
                         FoursquareMenus fms = fm.menus;
-                        Log.d("menu", String.valueOf(fms.count));
-                        List<FoursquareItems> fsi =fms.items;
-                        menuLvl1.add((ArrayList<FoursquareItems>) fsi);
+                        for (int i = 0; i <fms.count ; i++) {
+                            FoursquareItems fsi = fms.items.get(i);
+                            FoursquareMenusEntries fsme = fsi.entries;
+                            for (int j = 0; j <fsme.items.size() ; j++) {
+                                FoursquareInnerItems fsie = fsme.items.get(j);
+                                for (int k = 0; k <fsie.entries.count ; k++) {
+                                    dish thisisDish = fsie.entries.items.get(k);
+                                    dishList.add(thisisDish);
+
+                                }
+                            }
+                        }
+                        DishPage dishpage = (DishPage) sectionsPagerAdapter.getItem(1);
+                        dishpage.updateList(dishList);
+                        
+
+
                         //Log.d("menu",fsi.toString());
                         // FoursquareItems f1 = fsi.get(0);
                         // Log.d("Menu",f1.entries.items.get(0).entries.items.get(0).entryId);
