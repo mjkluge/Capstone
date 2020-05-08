@@ -25,6 +25,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import retrofit2.Call;
@@ -50,11 +51,17 @@ public class MainActivity extends AppCompatActivity {
     private String foursquareClientSecret;
     private SectionsPagerAdapter sectionsPagerAdapter;
     private List<FoursquareResults> frs = new ArrayList<FoursquareResults>();
+    private List<FoursquareResults> frsDetailed = new ArrayList<FoursquareResults>();
     public Location location;
     public Location getOutLocation() {return location;}
     public List<FoursquareResults> getFrs() {
         return frs;
     }
+
+    public List<FoursquareVenue> details;
+    public ArrayList<ArrayList<FoursquareItems>> menuLvl1;
+    public ArrayList<ArrayList<FoursquareItems>> getMenuLvl1(){return menuLvl1;}
+    public int count;
 
 
     @Override
@@ -70,6 +77,9 @@ public class MainActivity extends AppCompatActivity {
         foursquareClientID = getResources().getString(R.string.foursquare_client_id);
         foursquareClientSecret = getResources().getString(R.string.foursquare_client_secret);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        count = 0;
+        menuLvl1 = new ArrayList<ArrayList<FoursquareItems>>();
+        details = new ArrayList<>();
         // Gets the stored Foursquare API client ID and client secret from XML
         if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             getLocation();
@@ -84,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
 
 
     // Builds Retrofit and FoursquareService objects for calling the Foursquare API and parsing with GSON
@@ -103,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
                             .baseUrl(foursquareBaseURL)
                             .addConverterFactory(GsonConverterFactory.create())
                             .build();
-                    FoursquareService foursquare = retrofit.create(FoursquareService.class);
+                    final FoursquareService foursquare = retrofit.create(FoursquareService.class);
 
                     // Calls the Foursquare API to snap the user's location to a Foursquare venue
                     Call<FoursquareJSON> stpCall = foursquare.snapToPlace(
@@ -111,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                             foursquareClientSecret,
                             userLL,
                             userLLAcc);
-                    stpCall.enqueue(new Callback<FoursquareJSON>() {
+                    Callback<FoursquareJSON> restaurantCallback = new Callback<FoursquareJSON>() {
                         @Override
                         public void onResponse(Call<FoursquareJSON> call, Response<FoursquareJSON> response) {
 
@@ -120,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
                             FoursquareResponse fr = fjson.response;
                             List<FoursquareVenue> frs = fr.venues;
                             FoursquareVenue fv = frs.get(0);
-                            Log.d("Debug",fv.name);
+                            Log.d("Debug",fv.id + fv.name);
 
                         }
 
@@ -128,7 +139,8 @@ public class MainActivity extends AppCompatActivity {
                         public void onFailure(Call<FoursquareJSON> call, Throwable t) {
                             Log.d("Debug","Unable to get response");
                         }
-                    });
+                    };
+                    stpCall.enqueue(restaurantCallback);
                     // Calls the Foursquare API to explore nearby restaurants
                     Call<FoursquareJSON> restCall = foursquare.getRecommendations(
                             foursquareClientID,
@@ -141,22 +153,115 @@ public class MainActivity extends AppCompatActivity {
 
                             // Gets the venue object from the JSON response
                             FoursquareJSON fjson = response.body();
+                            Log.d("Pizza", response.toString());
                             FoursquareResponse fr = fjson.response;
                             FoursquareGroup fg = fr.group;
                             frs = fg.results;
                                 Log.d("Debug",frs.toString());
+                                Details(foursquare);
+                                getMenues(foursquare);
+
                         }
 
-                        @Override
+                                @Override
                         public void onFailure(Call<FoursquareJSON> call, Throwable t) {
                             Log.e(null, "Cant connect to foursquare");
                         }
 
                     });
+                   // Log.d("debug","made it here");
+                    //Details(foursquare);
                 } else {
                     Log.e(null, "Location was null");
                 }
             }
+            private void getMenues(FoursquareService foursquare) {
+
+               // for(FoursquareResults r:frs) {
+                //comment out below statement and uncomment above and lower squiggly for actual usage. this is for lower amount of calls
+               FoursquareResults r = frs.get(0);
+
+                Call<FoursquareJSON> menuCall = foursquare.getMenu(
+                        r.venue.id,
+                        foursquareClientID,
+                        foursquareClientSecret
+                );
+                menuCall.enqueue(new Callback<FoursquareJSON>() {
+
+                    @Override
+                    public void onResponse(Call<FoursquareJSON> call, Response<FoursquareJSON> response) {
+                        FoursquareJSON fjson2 = response.body();
+                        Log.d("details",response.toString());
+                        FoursquareResponse fr = fjson2.response;
+                        FoursquareMenu fm = fr.menu;
+                        FoursquareMenus fms = fm.menus;
+                        Log.d("menu", String.valueOf(fms.count));
+                        List<FoursquareItems> fsi =fms.items;
+                        menuLvl1.add((ArrayList<FoursquareItems>) fsi);
+                        //Log.d("menu",fsi.toString());
+                        // FoursquareItems f1 = fsi.get(0);
+                        // Log.d("Menu",f1.entries.items.get(0).entries.items.get(0).entryId);
+                         //Log.d("Menu", menuLvl1.get(0).get(0).entries.items.get(0).entries.items.get(0).entryId);
+
+
+
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<FoursquareJSON> call, Throwable t) {
+                        Log.d("Debug",t.getMessage());
+                    }
+                });
+               // }
+            }
+            private void Details(FoursquareService foursquare) {
+
+                //for(FoursquareResults r:frs) {
+                //comment out below statement and uncomment above and lower squiggly for actual usage. this is for lower amount of calls
+                FoursquareResults r = frs.get(0);
+
+                    Call<FoursquareJSON> detailsCall = foursquare.getDetails(
+                            r.venue.id,
+                            foursquareClientID,
+                            foursquareClientSecret
+                           );
+                    detailsCall.enqueue(new Callback<FoursquareJSON>() {
+
+                        @Override
+                        public void onResponse(Call<FoursquareJSON> call, Response<FoursquareJSON> response) {
+                            FoursquareJSON fjson2 = response.body();
+                            Log.d("details",response.toString());
+                            FoursquareResponse fr = fjson2.response;
+                            FoursquareVenue fv = fr.venue;
+                            details.add(fv);
+                            Iterator<FoursquareResults> iterator = frs.iterator();
+                            for(FoursquareResults r:frs){
+                                if(r.venue.id.equals(fv.id)){
+                                    r.venue.bestPhoto = fv.bestPhoto;
+                                    r.venue.rating = fv.rating;
+                                    r.venue.price = fv.price;
+                                }
+                            }
+                            Log.d("details",fr.venue.id + fr.description);
+
+                           // Log.d("details",fv.name);
+                            //Log.d("details",fv.price.message);
+                           // Log.d("details", String.valueOf(fv.rating));
+                            //Log.d("photo",fv.bestPhoto.prefix +"50x50"+ fv.bestPhoto.suffix);
+
+
+
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<FoursquareJSON> call, Throwable t) {
+                            Log.d("Debug","Unable to get details response");
+                        }
+                    });
+                }
+            //}
         });
     }
     @Override

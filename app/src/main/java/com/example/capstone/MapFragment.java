@@ -110,6 +110,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             LatLng loc = new LatLng(r.venue.location.lat,r.venue.location.lng);
             MarkerOptions myMarker = new MarkerOptions().position(loc).title(r.venue.name + r.venue.rating);
             mMap.addMarker(myMarker);
+
         }
         // Add a marker in Sydney and move the camera
         LatLng def = new LatLng(location.getLatitude(),location.getLongitude());
