@@ -2,7 +2,6 @@ package com.example.capstone;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +12,6 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import static androidx.constraintlayout.widget.Constraints.TAG;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -80,9 +77,10 @@ public class RestaurantPage extends Fragment implements RestaurantAdapter.OnRest
     }
 
     @Override
-    public void onRestaurantClick(int position) {
+    public void onRestaurantClick(FoursquareResults results) {
         //Log.d(TAG, "onRestaurantClick: Restaurant " + position);
         Intent intent = new Intent(getActivity(), RestaurantPopUp.class);
+        intent.putExtra("name", results.venue.name);
         startActivity(intent);
 
     }

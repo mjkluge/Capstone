@@ -19,6 +19,7 @@ public class RestaurantPopUp extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        String name = getIntent().getStringExtra("name");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant_pop_up);
 
@@ -31,7 +32,7 @@ public class RestaurantPopUp extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("McDonald's");
+        getSupportActionBar().setTitle(name);
         findViewById(R.id.toolbar_layout).setBackground(getDrawable(R.drawable.mcd));
 
 

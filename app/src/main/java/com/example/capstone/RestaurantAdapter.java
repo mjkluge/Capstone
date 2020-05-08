@@ -3,6 +3,7 @@ package com.example.capstone;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,7 +24,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.My
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.dish_row, parent, false);
+        View view = inflater.inflate(R.layout.restaurant_row, parent, false);
         return new MyViewHolder(view, orl);
     }
 
@@ -31,7 +32,8 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.My
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         FoursquareResults result = frs.get(position);
         holder.name.setText(result.venue.name);
-        holder.description.setText("Rating: " + result.venue.rating);
+        //holder.description.setText("Rating: " + result.venue.rating);
+        holder.ratingBar.setRating((float)result.venue.rating);
     }
 
     @Override
@@ -42,21 +44,23 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.My
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView name;
         TextView description;
+        RatingBar ratingBar;
         OnRestaurantListener orl;
         public MyViewHolder(@NonNull View itemView, OnRestaurantListener orl) {
             super(itemView);
             name = itemView.findViewById(R.id.name);
             description = itemView.findViewById(R.id.description);
+            ratingBar = itemView.findViewById(R.id.rating);
             this.orl = orl;
             itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            orl.onRestaurantClick(getAdapterPosition());
+            orl.onRestaurantClick(frs.get(getAdapterPosition()));
         }
     }
     public interface OnRestaurantListener{
-        void onRestaurantClick(int position);
+        void onRestaurantClick(FoursquareResults position);
     }
 }
