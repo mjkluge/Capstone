@@ -58,8 +58,8 @@ public class DbMethods {
 
                 myDetails.setVegetarian(rs.getBoolean(dishId));
                 myDetails.setVegan(rs.getBoolean(dishId));
-                myDetails.setDairy(rs.getBoolean(dishId));
-                myDetails.setNuts(rs.getBoolean(dishId));
+                myDetails.setDairyFree(rs.getBoolean(dishId));
+                myDetails.setNutFree(rs.getBoolean(dishId));
             }
 
         } catch (SQLException sqlEx) {

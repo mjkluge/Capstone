@@ -1,5 +1,6 @@
 package com.example.capstone;
 
+
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,9 +28,10 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.MyViewHolder> 
     public ArrayList<ArrayList<FoursquareItems>> menuLvl1;
 
 
-    public DishAdapter(ArrayList<ArrayList<FoursquareItems>> menu){
+    private OnDishListener odl;
+    public DishAdapter(OnDishListener odl){
         super();
-        this.menuLvl1 = menu;
+        this.odl = odl;
 
     }
 
@@ -38,7 +40,7 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.MyViewHolder> 
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.dish_row, parent, false);
-        return new MyViewHolder(view);
+        return new MyViewHolder(view, odl);
     }
 
     @Override
@@ -53,14 +55,24 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.MyViewHolder> 
         return 15;
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView name;
         TextView description;
-        public MyViewHolder(@NonNull View itemView) {
+        OnDishListener odl;
+        public MyViewHolder(@NonNull View itemView, OnDishListener odl) {
             super(itemView);
             name = itemView.findViewById(R.id.name);
             description = itemView.findViewById(R.id.description);
+            this.odl = odl;
+            itemView.setOnClickListener(this);
         }
+        @Override
+        public void onClick(View v) {
+            odl.onDishClick(getAdapterPosition());
+        }
+    }
+    public interface OnDishListener {
+        void onDishClick(int position);
     }
 
 }

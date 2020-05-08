@@ -1,5 +1,6 @@
 package com.example.capstone;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +23,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class DishPage extends Fragment {
+public class DishPage extends Fragment implements DishAdapter.OnDishListener{
 
 
 
@@ -78,12 +79,19 @@ public class DishPage extends Fragment {
         dishRecyclerView.setItemAnimator(new DefaultItemAnimator());
         dishRecyclerView.setLayoutManager(mLayoutManager);
 
-        DishAdapter dishAdapter = new DishAdapter(((MainActivity)this.getActivity()).getMenuLvl1());
+
+        DishAdapter dishAdapter = new DishAdapter(this);
+
 
         dishRecyclerView.setAdapter(dishAdapter);
 
 
 
+    }
+    @Override
+    public void onDishClick(int position) {
+        Intent intent = new Intent(getActivity(), DishPopUp.class);
+        startActivity(intent);
     }
 
 }

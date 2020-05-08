@@ -7,7 +7,19 @@ public class DishDetails {
     String description;
     int calories;
     String price;
-    boolean vegetarian, vegan, dairy, nuts;
+    boolean vegetarian;
+    boolean vegan;
+    boolean dairyFree;
+    boolean nutFree;
+    boolean glutenFree;
+
+    public boolean isGlutenFree() {
+        return glutenFree;
+    }
+
+    public void setGlutenFree(boolean glutenFree) {
+        this.glutenFree = glutenFree;
+    }
 
     public DishDetails() {
     }
@@ -44,12 +56,12 @@ public class DishDetails {
         return vegan;
     }
 
-    public boolean isDairy() {
-        return dairy;
+    public boolean isDairyFree() {
+        return dairyFree;
     }
 
-    public boolean isNuts() {
-        return nuts;
+    public boolean isNutFree() {
+        return nutFree;
     }
 
     public void setDishId(String dishId) {
@@ -84,11 +96,11 @@ public class DishDetails {
         this.vegan = vegan;
     }
 
-    public void setDairy(boolean dairy) {
-        this.dairy = dairy;
+    public void setDairyFree(boolean dairyFree) {
+        this.dairyFree = dairyFree;
     }
 
-    public void setNuts(boolean nuts) {
-        this.nuts = nuts;
+    public void setNutFree(boolean nutFree) {
+        this.nutFree = nutFree;
     }
 }
