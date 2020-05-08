@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
@@ -50,16 +51,19 @@ public class MainActivity extends AppCompatActivity {
     private String foursquareClientID;
     private String foursquareClientSecret;
     private SectionsPagerAdapter sectionsPagerAdapter;
-    private List<FoursquareResults> frs = new ArrayList<FoursquareResults>();
+
     public Location location;
     public Location getOutLocation() {return location;}
-    public List<FoursquareResults> getFrs() {
-        return frs;
-    }
 
+
+    public List<FoursquareResults> frs = new ArrayList<FoursquareResults>();
     public List<FoursquareVenue> details;
-    public ArrayList<dish> dishList;
+    public ArrayList<dish> dishList = new ArrayList<dish>();
+
     public ArrayList<dish> getdishList(){return dishList;}
+    public List<FoursquareResults> getFrs() { return frs; }
+
+
     public int count;
 
 
@@ -67,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        dishList = new ArrayList<dish>();
+        dishList.clear();
         details = new ArrayList<>();
         if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             getLocation();
@@ -75,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }
         setContentView(R.layout.activity_main);
-        sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
+        sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager(), frs, details, dishList);
         ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.tabs);
@@ -156,7 +160,8 @@ public class MainActivity extends AppCompatActivity {
                             Log.d("Pizza", response.toString());
                             FoursquareResponse fr = fjson.response;
                             FoursquareGroup fg = fr.group;
-                            frs = fg.results;
+                            frs.clear();
+                            frs.addAll(fg.results);
                                 Log.d("Debug",frs.toString());
                                 Details(foursquare);
                                 getMenues(foursquare);
@@ -207,8 +212,11 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
                         }
-                        DishPage dishpage = (DishPage) sectionsPagerAdapter.getItem(1);
-                        dishpage.updateList(dishList);
+                        //DishPage dishpage = (DishPage) sectionsPagerAdapter.getItem(1);
+                        //dishpage.updateList();
+                        //dishpage.getView().invalidate();
+                        //dishpage.updateList(dishList);
+
                         
 
 

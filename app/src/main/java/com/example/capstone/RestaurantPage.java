@@ -66,14 +66,13 @@ public class RestaurantPage extends Fragment implements RestaurantAdapter.OnRest
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-        restaurantRecyclerView = (RecyclerView) view.findViewById(R.id.myRecyclerView);
+        restaurantRecyclerView = (RecyclerView) view.findViewById(R.id.restaurantRecyclerView);
         restaurantRecyclerView.setItemAnimator(new DefaultItemAnimator());
         restaurantRecyclerView.setLayoutManager(mLayoutManager);
 
         RestaurantAdapter restaurantAdapter = new RestaurantAdapter(((MainActivity)this.getActivity()).getFrs(), this);
 
         restaurantRecyclerView.setAdapter(restaurantAdapter);
-
     }
 
     @Override
@@ -84,4 +83,5 @@ public class RestaurantPage extends Fragment implements RestaurantAdapter.OnRest
         startActivity(intent);
 
     }
+
 }

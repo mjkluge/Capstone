@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -12,6 +13,8 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 
@@ -23,8 +26,8 @@ public class DishPage extends Fragment implements DishAdapter.OnDishListener{
 
 
     private static final String ARG_SECTION_NUMBER = "section_number";
-    private RecyclerView dishRecyclerView;
-    private DishAdapter dishAdapter;
+    //private RecyclerView dishRecyclerView;
+    //private DishAdapter dishAdapter;
 
     public static DishPage newInstance(int index) {
         DishPage fragment = new DishPage();
@@ -33,12 +36,21 @@ public class DishPage extends Fragment implements DishAdapter.OnDishListener{
         fragment.setArguments(bundle);
         return fragment;
     }
-    public void updateList(ArrayList<dish> dishes){
-        if(dishAdapter == null){
-            dishAdapter = new DishAdapter(this, dishes);
-        }else {
-            dishAdapter.setDishList(dishes);
+
+    public void updateList(){
+        RecyclerView dishRecyclerView = getView().findViewById(R.id.restaurantRecyclerView);
+        if(dishRecyclerView != null){
+            DishAdapter adapter = (DishAdapter) dishRecyclerView.getAdapter();
+            if(adapter != null){
+                adapter.notifyDataSetChanged();
+            }
         }
+        //if(dishAdapter == null){
+        //    dishAdapter = new DishAdapter(this, dishes);
+       // }else {
+        //    dishAdapter.setDishList(dishes);
+        //}
+
     }
 
     @Override
@@ -52,15 +64,15 @@ public class DishPage extends Fragment implements DishAdapter.OnDishListener{
         pageViewModel.setIndex(index);
     }
 
-    public RecyclerView getDishRecyclerView() {
-        return dishRecyclerView;
-    }
+    //public RecyclerView getDishRecyclerView() {
+    //    return dishRecyclerView;
+    //}
 
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_main, container, false);
+        View root = inflater.inflate(R.layout.fragment_dish, container, false);
         //final TextView textView = root.findViewById(R.id.section_label);
         //pageViewModel.getText().observe(this, new Observer<String>() {
         //    @Override
@@ -78,17 +90,23 @@ public class DishPage extends Fragment implements DishAdapter.OnDishListener{
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-        dishRecyclerView = (RecyclerView) view.findViewById(R.id.myRecyclerView);
+        RecyclerView dishRecyclerView = (RecyclerView) view.findViewById(R.id.dishRecyclerView);
         dishRecyclerView.setItemAnimator(new DefaultItemAnimator());
         dishRecyclerView.setLayoutManager(mLayoutManager);
         ArrayList<dish> pizza = ((MainActivity) this.getActivity()).getdishList();
-        dishAdapter = new DishAdapter(this, ((MainActivity)this.getActivity()).getdishList());
+
+        final DishAdapter dishAdapter = new DishAdapter(this, ((MainActivity)this.getActivity()).getdishList());
 
 
         dishRecyclerView.setAdapter(dishAdapter);
 
-
-
+        Button button = view.findViewById(R.id.refreshButton);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dishAdapter.notifyDataSetChanged();
+            }
+        });
     }
     @Override
     public void onDishClick(int position) {

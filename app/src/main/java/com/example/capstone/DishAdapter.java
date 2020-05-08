@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.stream.Collectors;
 
 import retrofit2.Call;
@@ -23,7 +25,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class DishAdapter extends RecyclerView.Adapter<DishAdapter.MyViewHolder> {
+public class DishAdapter extends RecyclerView.Adapter<DishAdapter.MyViewHolder> implements Observer {
     private String foursquareClientID;
     private String foursquareClientSecret;
 
@@ -65,6 +67,11 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.MyViewHolder> 
     @Override
     public int getItemCount() {
         return dishList.size();
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        this.notifyDataSetChanged();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
