@@ -19,6 +19,7 @@ import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.gms.common.data.DataBufferObserver;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -29,6 +30,7 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Observable;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -66,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
     public List<FoursquareResults> filteredRes;
     public List<dish> filteredDishes;
 
+    public Observable myObservable = new Observable();
 
 
     @Override
@@ -116,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                                 d.filtered = true;
                             }
                         }
-                    }else if(r.venue.price.message.equals(query)) {
+                    }else if(r.venue.price != null &&  r.venue.price.message != null && r.venue.price.message.equals(query)) {
                         hit++;
                         filteredRes.add(r);
                         r.filtered = true;
@@ -124,6 +127,14 @@ public class MainActivity extends AppCompatActivity {
                             if(d.id.equals(r.venue.id)){
                                 filteredDishes.add(d);
                                 d.filtered = true;
+                            }
+                        }
+                    }
+                    else{
+                        r.filtered = false;
+                        for(dish d:dishList){
+                            if(d.id.equals(r.venue.id)){
+                                d.filtered = false;
                             }
                         }
                     }
@@ -135,6 +146,10 @@ public class MainActivity extends AppCompatActivity {
                 }
                 //send res to restaurant adapter
 
+                //RestaurantPage rp = (RestaurantPage) sectionsPagerAdapter.getItem(0);
+                //rp.filterList();
+                SingletonObserver.getInstance().change();
+                SingletonObserver.getInstance().notifyObservers();
                 return false;
             }
 

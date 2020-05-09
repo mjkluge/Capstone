@@ -5,5 +5,9 @@ public class FoursquareResults {
     // A venue object within the results.
     public FoursquareVenue venue;
 
-    public Boolean filtered;
+    public boolean filtered;
+
+    public FoursquareResults(){
+        filtered = true;
+    }
 }

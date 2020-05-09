@@ -9,5 +9,9 @@ class dish {
 
     String id;
 
-    Boolean filtered;
+    boolean filtered;
+
+    public dish(){
+        filtered = true;
+    }
 }

@@ -35,7 +35,7 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.MyViewHolder> 
     }
 
     public ArrayList<dish> dishList;
-    private ArrayList<dish> filteredDishList;
+    private ArrayList<dish> filteredDishList = new ArrayList<>();
 
 
 
@@ -45,6 +45,7 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.MyViewHolder> 
         this.odl = odl;
         this.dishList = dishList;
         copyFilteredItems();
+        SingletonObserver.getInstance().addObserver(this);
     }
 
 
@@ -70,7 +71,7 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.MyViewHolder> 
 
     @Override
     public void update(Observable o, Object arg) {
-        this.notifyDataSetChanged();
+        this.filter();
     }
 
     public void filter(){

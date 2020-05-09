@@ -20,6 +20,7 @@ public class RestaurantPage extends Fragment implements RestaurantAdapter.OnRest
 
     private static final String ARG_SECTION_NUMBER = "section_number";
     private RecyclerView restaurantRecyclerView;
+    private RestaurantAdapter restaurantAdapter;
 
     public static RestaurantPage newInstance(int index) {
         RestaurantPage fragment = new RestaurantPage();
@@ -27,6 +28,14 @@ public class RestaurantPage extends Fragment implements RestaurantAdapter.OnRest
         bundle.putInt(ARG_SECTION_NUMBER, index);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    public void filterList(){
+
+        if(restaurantAdapter != null){
+            restaurantAdapter.filter();
+        }
+
     }
 
     @Override
@@ -70,7 +79,7 @@ public class RestaurantPage extends Fragment implements RestaurantAdapter.OnRest
         restaurantRecyclerView.setItemAnimator(new DefaultItemAnimator());
         restaurantRecyclerView.setLayoutManager(mLayoutManager);
 
-        RestaurantAdapter restaurantAdapter = new RestaurantAdapter(((MainActivity)this.getActivity()).getFrs(), this);
+        restaurantAdapter = new RestaurantAdapter(((MainActivity)this.getActivity()).getFrs(), this);
 
         restaurantRecyclerView.setAdapter(restaurantAdapter);
     }

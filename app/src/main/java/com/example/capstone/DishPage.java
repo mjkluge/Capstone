@@ -27,7 +27,7 @@ public class DishPage extends Fragment implements DishAdapter.OnDishListener{
 
     private static final String ARG_SECTION_NUMBER = "section_number";
     //private RecyclerView dishRecyclerView;
-    //private DishAdapter dishAdapter;
+    private DishAdapter dishAdapter;
 
     public static DishPage newInstance(int index) {
         DishPage fragment = new DishPage();
@@ -37,13 +37,9 @@ public class DishPage extends Fragment implements DishAdapter.OnDishListener{
         return fragment;
     }
 
-    public void updateList(){
-        RecyclerView dishRecyclerView = getView().findViewById(R.id.restaurantRecyclerView);
-        if(dishRecyclerView != null){
-            DishAdapter adapter = (DishAdapter) dishRecyclerView.getAdapter();
-            if(adapter != null){
-                adapter.notifyDataSetChanged();
-            }
+    public void filterList(){
+        if(dishAdapter != null){
+            dishAdapter.filter();
         }
         //if(dishAdapter == null){
         //    dishAdapter = new DishAdapter(this, dishes);
@@ -95,7 +91,7 @@ public class DishPage extends Fragment implements DishAdapter.OnDishListener{
         dishRecyclerView.setLayoutManager(mLayoutManager);
         ArrayList<dish> pizza = ((MainActivity) this.getActivity()).getdishList();
 
-        final DishAdapter dishAdapter = new DishAdapter(this, ((MainActivity)this.getActivity()).getdishList());
+        dishAdapter = new DishAdapter(this, ((MainActivity)this.getActivity()).getdishList());
 
 
         dishRecyclerView.setAdapter(dishAdapter);

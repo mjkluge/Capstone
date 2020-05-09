@@ -1,5 +1,6 @@
 package com.example.capstone;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,17 +13,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
-public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.MyViewHolder> {
+public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.MyViewHolder> implements Observer {
     List<FoursquareResults> frs;
-    private List<FoursquareResults> filteredFrs;
+    private List<FoursquareResults> filteredFrs = new ArrayList<>();
     private OnRestaurantListener orl;
     public RestaurantAdapter(List<FoursquareResults> frs, OnRestaurantListener orl){
         super();
         this.frs = frs;
         this.orl = orl;
         copyFilteredItems();
+        SingletonObserver.getInstance().addObserver(this);
     }
 
     @NonNull
@@ -35,7 +40,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.My
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        FoursquareResults result = frs.get(position);
+        FoursquareResults result = filteredFrs.get(position);
         holder.name.setText(result.venue.name);
         holder.description.setText("Rating: " + result.venue.rating);
 
@@ -52,7 +57,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.My
 
     @Override
     public int getItemCount() {
-        return frs.size();
+        return filteredFrs.size();
     }
 
     public void filter(){
@@ -67,6 +72,12 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.My
                 filteredFrs.add(f);
             }
         }
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        Log.d("TAG", "update: called by observable");
+        filter();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -87,7 +98,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.My
 
         @Override
         public void onClick(View v) {
-            orl.onRestaurantClick(frs.get(getAdapterPosition()));
+            orl.onRestaurantClick(filteredFrs.get(getAdapterPosition()));
 
         }
     }
