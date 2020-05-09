@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -62,9 +63,9 @@ public class MainActivity extends AppCompatActivity {
 
     public ArrayList<dish> getdishList(){return dishList;}
     public List<FoursquareResults> getFrs() { return frs; }
+    public List<FoursquareResults> filteredRes;
+    public List<dish> filteredDishes;
 
-
-    public int count;
 
 
     @Override
@@ -87,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton fab = findViewById(R.id.fab);
         foursquareClientID = getResources().getString(R.string.foursquare_client_id);
         foursquareClientSecret = getResources().getString(R.string.foursquare_client_secret);
+        SearchView searchview = findViewById(R.id.searchbar);
 
         // Gets the stored Foursquare API client ID and client secret from XML
 
@@ -95,6 +97,50 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), FiltersPopup.class);
                 startActivity(intent);
+            }
+        });
+        searchview.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                int hit = 0;
+                filteredRes = new ArrayList<>();
+                filteredDishes = new ArrayList<>();
+                for(FoursquareResults r:frs) {
+                    if(r.venue.name.equals(query)){
+                        hit++;
+                        filteredRes.add(r);
+                        r.filtered = true;
+                        for(dish d:dishList){
+                            if(d.id.equals(r.venue.id)){
+                                filteredDishes.add(d);
+                                d.filtered = true;
+                            }
+                        }
+                    }else if(r.venue.price.message.equals(query)) {
+                        hit++;
+                        filteredRes.add(r);
+                        r.filtered = true;
+                        for(dish d:dishList){
+                            if(d.id.equals(r.venue.id)){
+                                filteredDishes.add(d);
+                                d.filtered = true;
+                            }
+                        }
+                    }
+                }
+                if(hit == 0){
+
+                }else{
+
+                }
+                //send res to restaurant adapter
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
             }
         });
     }
@@ -180,11 +226,11 @@ public class MainActivity extends AppCompatActivity {
                     Log.e(null, "Location was null");
                 }
             }
-            private void getMenues(FoursquareService foursquare) {
+            public void getMenues(FoursquareService foursquare) {
 
-               // for(FoursquareResults r:frs) {
+                //for(FoursquareResults r:frs) {
                 //comment out below statement and uncomment above and lower squiggly for actual usage. this is for lower amount of calls
-               FoursquareResults r = frs.get(0);
+                final FoursquareResults r = frs.get(0);
 
                 Call<FoursquareJSON> menuCall = foursquare.getMenu(
                         r.venue.id,
@@ -207,6 +253,8 @@ public class MainActivity extends AppCompatActivity {
                                 FoursquareInnerItems fsie = fsme.items.get(j);
                                 for (int k = 0; k <fsie.entries.count ; k++) {
                                     dish thisisDish = fsie.entries.items.get(k);
+                                    thisisDish.id = r.venue.id;
+                                    Log.d("test", thisisDish.id);
                                     dishList.add(thisisDish);
 
                                 }
@@ -235,7 +283,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("Debug",t.getMessage());
                     }
                 });
-               // }
+              //  }
             }
             private void Details(FoursquareService foursquare) {
 
@@ -286,28 +334,5 @@ public class MainActivity extends AppCompatActivity {
             //}
         });
     }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        Log.e(null, "onCreateOptionsMenu");
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
 
-        //MenuItem searchItem = menu.findItem(R.id.action_search);
-        //SearchView searchView = (SearchView) searchItem.getActionView();
-
-        //searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        /*searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                //adapter.getFilter().filter(newText);
-                return false;
-            }
-        });*/
-        return true;
-    }
 }

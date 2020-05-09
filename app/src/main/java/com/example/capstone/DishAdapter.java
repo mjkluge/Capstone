@@ -29,13 +29,14 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.MyViewHolder> 
     private String foursquareClientID;
     private String foursquareClientSecret;
 
-    List<FoursquareResults> frs;
 
     public void setDishList(ArrayList<dish> dishList) {
         this.dishList = dishList;
     }
 
     public ArrayList<dish> dishList;
+    private ArrayList<dish> filteredDishList;
+
 
 
     private OnDishListener odl;
@@ -72,6 +73,10 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.MyViewHolder> 
     @Override
     public void update(Observable o, Object arg) {
         this.notifyDataSetChanged();
+    }
+
+    public void filter(){
+
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

@@ -6,4 +6,8 @@ class dish {
     String name;
 
     String description;
+
+    String id;
+
+    Boolean filtered;
 }
