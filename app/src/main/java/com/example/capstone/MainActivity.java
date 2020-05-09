@@ -243,9 +243,9 @@ public class MainActivity extends AppCompatActivity {
             }
             public void getMenues(FoursquareService foursquare) {
 
-                //for(FoursquareResults r:frs) {
+                for(final FoursquareResults r:frs) {
                 //comment out below statement and uncomment above and lower squiggly for actual usage. this is for lower amount of calls
-                final FoursquareResults r = frs.get(0);
+                //final FoursquareResults r = frs.get(0);
 
                 Call<FoursquareJSON> menuCall = foursquare.getMenu(
                         r.venue.id,
@@ -298,13 +298,13 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("Debug",t.getMessage());
                     }
                 });
-              //  }
+                }
             }
             private void Details(FoursquareService foursquare) {
 
-                //for(FoursquareResults r:frs) {
+                for(FoursquareResults r:frs) {
                 //comment out below statement and uncomment above and lower squiggly for actual usage. this is for lower amount of calls
-                FoursquareResults r = frs.get(0);
+                //FoursquareResults r = frs.get(0);
 
                     Call<FoursquareJSON> detailsCall = foursquare.getDetails(
                             r.venue.id,
@@ -346,7 +346,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                 }
-            //}
+            }
         });
     }
 
