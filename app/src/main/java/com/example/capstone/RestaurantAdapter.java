@@ -16,11 +16,13 @@ import java.util.List;
 
 public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.MyViewHolder> {
     List<FoursquareResults> frs;
+    private List<FoursquareResults> filteredFrs;
     private OnRestaurantListener orl;
     public RestaurantAdapter(List<FoursquareResults> frs, OnRestaurantListener orl){
         super();
         this.frs = frs;
         this.orl = orl;
+        copyFilteredItems();
     }
 
     @NonNull
@@ -51,6 +53,20 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.My
     @Override
     public int getItemCount() {
         return frs.size();
+    }
+
+    public void filter(){
+        copyFilteredItems();
+        notifyDataSetChanged();
+    }
+
+    private void copyFilteredItems(){
+        filteredFrs.clear();
+        for (FoursquareResults f : frs) {
+            if(f.filtered){
+                filteredFrs.add(f);
+            }
+        }
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

@@ -44,9 +44,7 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.MyViewHolder> 
         super();
         this.odl = odl;
         this.dishList = dishList;
-
-
-
+        copyFilteredItems();
     }
 
 
@@ -76,7 +74,17 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.MyViewHolder> 
     }
 
     public void filter(){
+        copyFilteredItems();
+        notifyDataSetChanged();
+    }
 
+    private void copyFilteredItems(){
+        filteredDishList.clear();
+        for (dish d : dishList) {
+            if(d.filtered){
+                filteredDishList.add(d);
+            }
+        }
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
