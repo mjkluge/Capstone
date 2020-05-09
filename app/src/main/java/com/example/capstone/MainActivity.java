@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -14,7 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
@@ -25,6 +25,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -58,9 +65,9 @@ public class MainActivity extends AppCompatActivity {
 
     public List<FoursquareResults> frs = new ArrayList<FoursquareResults>();
     public List<FoursquareVenue> details;
-    public ArrayList<dish> dishList = new ArrayList<dish>();
+    public ArrayList<Dish> dishList = new ArrayList<Dish>();
 
-    public ArrayList<dish> getdishList(){return dishList;}
+    public ArrayList<Dish> getdishList(){return dishList;}
     public List<FoursquareResults> getFrs() { return frs; }
 
 
@@ -206,12 +213,14 @@ public class MainActivity extends AppCompatActivity {
                             for (int j = 0; j <fsme.items.size() ; j++) {
                                 FoursquareInnerItems fsie = fsme.items.get(j);
                                 for (int k = 0; k <fsie.entries.count ; k++) {
-                                    dish thisisDish = fsie.entries.items.get(k);
+                                    Dish thisisDish = fsie.entries.items.get(k);
                                     dishList.add(thisisDish);
-
+                                    new DishDetailsTask().execute(thisisDish);
                                 }
                             }
                         }
+
+
                         //DishPage dishpage = (DishPage) sectionsPagerAdapter.getItem(1);
                         //dishpage.updateList();
                         //dishpage.getView().invalidate();
@@ -310,4 +319,73 @@ public class MainActivity extends AppCompatActivity {
         });*/
         return true;
     }
+
+    private class DishDetailsTask extends AsyncTask<Dish, String, String> {
+
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            //pd = new ProgressDialog(MainActivity.this);
+            //pd.setMessage("Please wait");
+            //pd.setCancelable(false);
+            // pd.show();
+        }
+
+        protected String doInBackground(Dish... params) {
+
+            HttpURLConnection connection = null;
+            BufferedReader reader = null;
+
+            try {
+                Dish mydish = params[0];
+                URL url = new URL("http://192.168.1.105:8080/foodfinder/get_dish_details?id=" + mydish.entryId);
+                connection = (HttpURLConnection) url.openConnection();
+                connection.connect();
+
+
+                InputStream stream = connection.getInputStream();
+
+                reader = new BufferedReader(new InputStreamReader(stream));
+
+                StringBuffer buffer = new StringBuffer();
+                String line = "";
+
+                while ((line = reader.readLine()) != null) {
+                    buffer.append(line+"\n");
+                    Log.d("Response: ", "> " + line);   //here u ll get whole response...... :-)
+
+                }
+
+                return buffer.toString();
+
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (connection != null) {
+                    connection.disconnect();
+                }
+                try {
+                    if (reader != null) {
+                        reader.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            //if (pd.isShowing()){
+            //   pd.dismiss();
+            //}
+            //txtJson.setText(result);
+        }
+    }
+
 }

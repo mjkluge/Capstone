@@ -14,8 +14,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.snackbar.Snackbar;
-
 import java.util.ArrayList;
 
 /**
@@ -93,7 +91,7 @@ public class DishPage extends Fragment implements DishAdapter.OnDishListener{
         RecyclerView dishRecyclerView = (RecyclerView) view.findViewById(R.id.dishRecyclerView);
         dishRecyclerView.setItemAnimator(new DefaultItemAnimator());
         dishRecyclerView.setLayoutManager(mLayoutManager);
-        ArrayList<dish> pizza = ((MainActivity) this.getActivity()).getdishList();
+        ArrayList<Dish> pizza = ((MainActivity) this.getActivity()).getdishList();
 
         final DishAdapter dishAdapter = new DishAdapter(this, ((MainActivity)this.getActivity()).getdishList());
 
