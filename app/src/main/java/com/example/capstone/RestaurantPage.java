@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -82,6 +83,16 @@ public class RestaurantPage extends Fragment implements RestaurantAdapter.OnRest
         restaurantAdapter = new RestaurantAdapter(((MainActivity)this.getActivity()).getFrs(), this);
 
         restaurantRecyclerView.setAdapter(restaurantAdapter);
+
+
+        final SwipeRefreshLayout refresh = view.findViewById(R.id.restaurantRefreshLayout);
+        refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                restaurantAdapter.filter();
+                refresh.setRefreshing(false);
+            }
+        });
     }
 
     @Override

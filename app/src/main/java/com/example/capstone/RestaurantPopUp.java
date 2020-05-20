@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -26,11 +25,7 @@ public class RestaurantPopUp extends AppCompatActivity {
         DisplayMetrics dn = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dn);
 
-        int width = dn.widthPixels;
-        int height = dn.heightPixels;
-        getWindow().setLayout((int)(width), (int)(height));
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.restaurantToolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(name);
         findViewById(R.id.toolbar_layout).setBackground(getDrawable(R.drawable.mcd));

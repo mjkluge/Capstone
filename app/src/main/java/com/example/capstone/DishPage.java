@@ -13,8 +13,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.android.material.snackbar.Snackbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.util.ArrayList;
 
@@ -89,24 +88,28 @@ public class DishPage extends Fragment implements DishAdapter.OnDishListener{
         RecyclerView dishRecyclerView = (RecyclerView) view.findViewById(R.id.dishRecyclerView);
         dishRecyclerView.setItemAnimator(new DefaultItemAnimator());
         dishRecyclerView.setLayoutManager(mLayoutManager);
-        ArrayList<dish> pizza = ((MainActivity) this.getActivity()).getdishList();
+        ArrayList<Dish> pizza = ((MainActivity) this.getActivity()).getdishList();
 
         dishAdapter = new DishAdapter(this, ((MainActivity)this.getActivity()).getdishList());
 
 
         dishRecyclerView.setAdapter(dishAdapter);
 
-        Button button = view.findViewById(R.id.refreshButton);
-        button.setOnClickListener(new View.OnClickListener() {
+        final SwipeRefreshLayout refresh = view.findViewById(R.id.dishRefreshLayout);
+        refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onClick(View view) {
+            public void onRefresh() {
                 dishAdapter.notifyDataSetChanged();
+                refresh.setRefreshing(false);
             }
         });
     }
     @Override
-    public void onDishClick(int position) {
+    public void onDishClick(String dishId, String name, String description) {
         Intent intent = new Intent(getActivity(), DishPopUp.class);
+        intent.putExtra("dishId", dishId);
+        intent.putExtra("name", name);
+        intent.putExtra("description", description);
         startActivity(intent);
     }
 

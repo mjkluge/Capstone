@@ -1,46 +1,34 @@
 package com.example.capstone;
 
 
-import android.content.Context;
-import android.os.Build;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.stream.Collectors;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DishAdapter extends RecyclerView.Adapter<DishAdapter.MyViewHolder> implements Observer {
     private String foursquareClientID;
     private String foursquareClientSecret;
 
 
-    public void setDishList(ArrayList<dish> dishList) {
+    public void setDishList(ArrayList<Dish> dishList) {
         this.dishList = dishList;
     }
 
-    public ArrayList<dish> dishList;
-    private ArrayList<dish> filteredDishList = new ArrayList<>();
+    public ArrayList<Dish> dishList;
+    private ArrayList<Dish> filteredDishList = new ArrayList<>();
 
 
 
     private OnDishListener odl;
-    public DishAdapter(OnDishListener odl, ArrayList<dish> dishList){
+    public DishAdapter(OnDishListener odl, ArrayList<Dish> dishList){
         super();
         this.odl = odl;
         this.dishList = dishList;
@@ -81,7 +69,7 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.MyViewHolder> 
 
     private void copyFilteredItems(){
         filteredDishList.clear();
-        for (dish d : dishList) {
+        for (Dish d : dishList) {
             if(d.filtered){
                 filteredDishList.add(d);
             }
@@ -97,15 +85,17 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.MyViewHolder> 
             name = itemView.findViewById(R.id.name);
             description = itemView.findViewById(R.id.description);
             this.odl = odl;
+
             itemView.setOnClickListener(this);
         }
         @Override
-        public void onClick(View v) {
-            odl.onDishClick(getAdapterPosition());
+        public void onClick(View v){
+            Dish dish = dishList.get(getAdapterPosition());
+            odl.onDishClick(dish.entryId, dish.name, dish.description);
         }
     }
     public interface OnDishListener {
-        void onDishClick(int position);
+        void onDishClick(String dishId, String name, String description);
     }
 
 }

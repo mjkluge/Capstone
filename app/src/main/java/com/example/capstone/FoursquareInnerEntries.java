@@ -5,7 +5,7 @@ import java.util.List;
 class FoursquareInnerEntries {
     int count;
 
-    List<dish> items;
+    List<Dish> items;
 }
 
 

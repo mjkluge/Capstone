@@ -7,7 +7,6 @@ import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,14 +22,14 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     private final Context mContext;
     List<FoursquareResults> frs;
     List<FoursquareVenue> details;
-    ArrayList<dish> dishList;
+    ArrayList<Dish> dishList;
 
     public SectionsPagerAdapter(Context context, FragmentManager fm) {
         super(fm);
         mContext = context;
     }
 
-    public SectionsPagerAdapter(Context context, FragmentManager fm, List<FoursquareResults> frs, List<FoursquareVenue> details, ArrayList<dish> dishList) {
+    public SectionsPagerAdapter(Context context, FragmentManager fm, List<FoursquareResults> frs, List<FoursquareVenue> details, ArrayList<Dish> dishList) {
         super(fm);
         mContext = context;
         this.frs = frs;

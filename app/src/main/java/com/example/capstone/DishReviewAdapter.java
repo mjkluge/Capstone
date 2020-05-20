@@ -11,10 +11,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.MyViewHolder> {
-
-    public ReviewAdapter(){
+public class DishReviewAdapter extends RecyclerView.Adapter<DishReviewAdapter.MyViewHolder> {
+    List<Review> reviews;
+    public DishReviewAdapter(List<Review> reviews){
         super();
+        this.reviews = reviews;
     }
 
     @NonNull
@@ -27,26 +28,15 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.MyViewHold
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        if(position == 0){
-            holder.name.setText("Alex Kane");
-            holder.reviewText.setText("Я доволен этим рестораном!");
-            holder.ratingBar.setRating(3);
-        }
-        if(position == 1){
-            holder.name.setText("Mitchel Kluge");
-            holder.reviewText.setText("Wowsers!");
-            holder.ratingBar.setRating(5);
-        }
-        if(position == 2){
-            holder.name.setText("Ronald McDonald");
-            holder.reviewText.setText("This Restauraunt will never live up to MCD!");
-            holder.ratingBar.setRating(1);
-        }
+        Review review = reviews.get(position);
+        holder.name.setText("Anonymous");
+        holder.reviewText.setText(review.content);
+        holder.ratingBar.setRating(review.rating);
     }
 
     @Override
     public int getItemCount() {
-        return 3;
+        return reviews.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
@@ -59,7 +49,6 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.MyViewHold
             name = itemView.findViewById(R.id.name);
             reviewText = itemView.findViewById(R.id.reviewText);
             ratingBar = itemView.findViewById(R.id.ratingBar);
-
         }
     }
 }

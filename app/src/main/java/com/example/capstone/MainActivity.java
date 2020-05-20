@@ -4,22 +4,24 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
-import com.google.android.gms.common.data.DataBufferObserver;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,10 +29,20 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Observable;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -50,81 +62,37 @@ public class MainActivity extends AppCompatActivity {
     // The base URL for the Foursquare API
     private String foursquareBaseURL = "https://api.foursquare.com/v2/";
 
-    // The client ID and client secret for authenticating with the Foursquare API
-    private String foursquareClientID;
-    private String foursquareClientSecret;
-    private SectionsPagerAdapter sectionsPagerAdapter;
-
-    public Location location;
-    public Location getOutLocation() {return location;}
-
-
-    public List<FoursquareResults> frs = new ArrayList<FoursquareResults>();
-    public List<FoursquareVenue> details;
-    public ArrayList<dish> dishList = new ArrayList<dish>();
-
-    public ArrayList<dish> getdishList(){return dishList;}
-    public List<FoursquareResults> getFrs() { return frs; }
-    public List<FoursquareResults> filteredRes;
-    public List<dish> filteredDishes;
-
-    public Observable myObservable = new Observable();
-
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        dishList.clear();
-        details = new ArrayList<>();
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            getLocation();
-        } else {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        }
-        setContentView(R.layout.activity_main);
-        sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager(), frs, details, dishList);
-        ViewPager viewPager = findViewById(R.id.view_pager);
-        viewPager.setAdapter(sectionsPagerAdapter);
-        TabLayout tabs = findViewById(R.id.tabs);
-        tabs.setupWithViewPager(viewPager);
-        FloatingActionButton fab = findViewById(R.id.fab);
-        foursquareClientID = getResources().getString(R.string.foursquare_client_id);
-        foursquareClientSecret = getResources().getString(R.string.foursquare_client_secret);
-        SearchView searchview = findViewById(R.id.searchbar);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        // Gets the stored Foursquare API client ID and client secret from XML
+        MenuItem mSearch = menu.findItem(R.id.action_search);
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), FiltersPopup.class);
-                startActivity(intent);
-            }
-        });
-        searchview.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        SearchView searchView = (SearchView) mSearch.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 int hit = 0;
-                filteredRes = new ArrayList<>();
-                filteredDishes = new ArrayList<>();
+                ArrayList<FoursquareResults> filteredRes = new ArrayList<>();
+                ArrayList<Dish> filteredDishes = new ArrayList<>();
                 for(FoursquareResults r:frs) {
                     if(r.venue.name.equals(query)){
                         hit++;
                         filteredRes.add(r);
                         r.filtered = true;
-                        for(dish d:dishList){
-                            if(d.id.equals(r.venue.id)){
+                        for(Dish d:dishList){
+                            if(d.entryId.equals(r.venue.id)){
                                 filteredDishes.add(d);
                                 d.filtered = true;
                             }
                         }
-                    }else if(r.venue.price != null &&  r.venue.price.message != null && r.venue.price.message.equals(query)) {
+                    }
+                    else if(r.venue.price != null &&  r.venue.price.message != null && r.venue.price.message.equals(query)) {
                         hit++;
                         filteredRes.add(r);
                         r.filtered = true;
-                        for(dish d:dishList){
-                            if(d.id.equals(r.venue.id)){
+                        for(Dish d:dishList){
+                            if(d.entryId.equals(r.venue.id)){
                                 filteredDishes.add(d);
                                 d.filtered = true;
                             }
@@ -132,8 +100,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                     else{
                         r.filtered = false;
-                        for(dish d:dishList){
-                            if(d.id.equals(r.venue.id)){
+                        for(Dish d:dishList){
+                            if(d.entryId.equals(r.venue.id)){
                                 d.filtered = false;
                             }
                         }
@@ -141,7 +109,8 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if(hit == 0){
 
-                }else{
+                }
+                else{
 
                 }
                 //send res to restaurant adapter
@@ -158,9 +127,65 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        return true;
     }
 
 
+
+    // The client ID and client secret for authenticating with the Foursquare API
+    private String foursquareClientID;
+    private String foursquareClientSecret;
+    private SectionsPagerAdapter sectionsPagerAdapter;
+
+    public Location location;
+    private ViewPager viewPager;
+
+    public Location getOutLocation() {return location;}
+
+
+    public List<FoursquareResults> frs = new ArrayList<FoursquareResults>();
+    public List<FoursquareVenue> details;
+    public ArrayList<Dish> dishList = new ArrayList<Dish>();
+
+    public ArrayList<Dish> getdishList(){return dishList;}
+    public List<FoursquareResults> getFrs() { return frs; }
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        dishList.clear();
+        details = new ArrayList<>();
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            getLocation();
+        } else {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
+        setContentView(R.layout.activity_main);
+        sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager(), frs, details, dishList);
+        viewPager = findViewById(R.id.view_pager);
+        viewPager.setAdapter(sectionsPagerAdapter);
+        TabLayout tabs = findViewById(R.id.tabs);
+        tabs.setupWithViewPager(viewPager);
+        FloatingActionButton fab = findViewById(R.id.fab);
+        foursquareClientID = getResources().getString(R.string.foursquare_client_id);
+        foursquareClientSecret = getResources().getString(R.string.foursquare_client_secret);
+        Toolbar mToolbar = findViewById(R.id.restaurantToolbar);
+        setSupportActionBar(mToolbar);
+
+        //viewPager.setCurrentItem(2);
+        // Gets the stored Foursquare API client ID and client secret from XML
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(), FiltersPopup.class);
+                startActivity(intent);
+            }
+        });
+    }
 
     // Builds Retrofit and FoursquareService objects for calling the Foursquare API and parsing with GSON
 
@@ -225,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
                             frs.addAll(fg.results);
                                 Log.d("Debug",frs.toString());
                                 Details(foursquare);
-                                getMenues(foursquare);
+                                getMenus(foursquare);
 
                         }
 
@@ -241,9 +266,9 @@ public class MainActivity extends AppCompatActivity {
                     Log.e(null, "Location was null");
                 }
             }
-            public void getMenues(FoursquareService foursquare) {
+            public void getMenus(FoursquareService foursquare) {
 
-                //for(FoursquareResults r:frs) {
+                //for(final FoursquareResults r:frs) {
                 //comment out below statement and uncomment above and lower squiggly for actual usage. this is for lower amount of calls
                 final FoursquareResults r = frs.get(0);
 
@@ -267,30 +292,15 @@ public class MainActivity extends AppCompatActivity {
                             for (int j = 0; j <fsme.items.size() ; j++) {
                                 FoursquareInnerItems fsie = fsme.items.get(j);
                                 for (int k = 0; k <fsie.entries.count ; k++) {
-                                    dish thisisDish = fsie.entries.items.get(k);
-                                    thisisDish.id = r.venue.id;
-                                    Log.d("test", thisisDish.id);
+                                    Dish thisisDish = fsie.entries.items.get(k);
+                                    thisisDish.venueId = r.venue.id;
+                                    Log.d("test", thisisDish.venueId);
                                     dishList.add(thisisDish);
-
+                                    //get our details
+                                    new DishDetailsTask().execute(thisisDish);
                                 }
                             }
                         }
-                        //DishPage dishpage = (DishPage) sectionsPagerAdapter.getItem(1);
-                        //dishpage.updateList();
-                        //dishpage.getView().invalidate();
-                        //dishpage.updateList(dishList);
-
-                        
-
-
-                        //Log.d("menu",fsi.toString());
-                        // FoursquareItems f1 = fsi.get(0);
-                        // Log.d("Menu",f1.entries.items.get(0).entries.items.get(0).entryId);
-                         //Log.d("Menu", menuLvl1.get(0).get(0).entries.items.get(0).entries.items.get(0).entryId);
-
-
-
-
                     }
 
                     @Override
@@ -298,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("Debug",t.getMessage());
                     }
                 });
-              //  }
+                //}
             }
             private void Details(FoursquareService foursquare) {
 
@@ -345,9 +355,90 @@ public class MainActivity extends AppCompatActivity {
                             Log.d("Debug","Unable to get details response");
                         }
                     });
-                }
-            //}
+                //}
+            }
         });
+    }
+
+    private class DishDetailsTask extends AsyncTask<Dish, String, String> {
+
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            //pd = new ProgressDialog(MainActivity.this);
+            //pd.setMessage("Please wait");
+            //pd.setCancelable(false);
+            // pd.show();
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+        protected String doInBackground(Dish... params) {
+
+            HttpURLConnection connection = null;
+            BufferedReader reader = null;
+
+            try {
+                Dish mydish = params[0];
+                URL url = new URL("http://192.168.1.105:8080/foodfinder/get_dish_details?id=" + mydish.entryId);
+                connection = (HttpURLConnection) url.openConnection();
+                connection.connect();
+
+
+                InputStream stream = connection.getInputStream();
+
+                reader = new BufferedReader(new InputStreamReader(stream));
+
+                StringBuffer buffer = new StringBuffer();
+                String line = "";
+
+                while ((line = reader.readLine()) != null) {
+                    buffer.append(line+"\n");
+                    Log.d("Response: ", "> " + line);   //here u ll get whole response...... :-)
+
+                }
+                JSONArray jArray = new JSONArray(buffer.toString());
+                JSONObject jObject = jArray.getJSONObject(0);
+                mydish.avgReview = Float.parseFloat(jObject.getString("avgRating"));
+                mydish.calories = jObject.getInt("calories");
+                mydish.price = jObject.getString("price");
+                mydish.vegetarian = jObject.getString("vegetarian").equals("1");
+                mydish.vegan = jObject.getString("vegan").equals("1");
+                mydish.dairyFree = jObject.getString("dairyfree").equals("1");
+                mydish.nutFree = jObject.getString("nutfree").equals("1");
+                mydish.glutenFree = jObject.getString("glutenfree").equals("1");
+
+                return buffer.toString();
+
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } finally {
+                if (connection != null) {
+                    connection.disconnect();
+                }
+                try {
+                    if (reader != null) {
+                        reader.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            //if (pd.isShowing()){
+            //   pd.dismiss();
+            //}
+            //txtJson.setText(result);
+        }
     }
 
 }

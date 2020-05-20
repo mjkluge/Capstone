@@ -39,8 +39,8 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
                 android:text="A year ago"
-                app:layout_constraintBottom_toBottomOf="@+id/rating"
-                app:layout_constraintStart_toEndOf="@+id/rating" />
+                app:layout_constraintBottom_toBottomOf="@+id/ratingBar"
+                app:layout_constraintStart_toEndOf="@+id/ratingBar" />
 
             <TextView
                 android:id="@+id/reviewText"
@@ -56,15 +56,15 @@
                 app:autoSizeTextType="uniform"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/rating"
-                app:layout_constraintTop_toBottomOf="@+id/rating" />
+                app:layout_constraintStart_toStartOf="@+id/ratingBar"
+                app:layout_constraintTop_toBottomOf="@+id/ratingBar" />
 
-            <TextView
-                android:id="@+id/rating"
+            <RatingBar
+                android:id="@+id/ratingBar"
+                style="@style/Widget.AppCompat.RatingBar.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="⭐⭐⭐⭐⭐"
                 app:layout_constraintStart_toStartOf="@+id/name"
                 app:layout_constraintTop_toBottomOf="@+id/name" />
         </androidx.constraintlayout.widget.ConstraintLayout>
